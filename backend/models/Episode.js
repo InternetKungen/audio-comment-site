@@ -1,52 +1,74 @@
 import mongoose from "mongoose";
 
-const episodeSchema = new mongoose.Schema({
+const episodeSchema = new mongoose.Schema(
+  {
     title: {
-        type: String, // "Yxwalds vrede"
-        required: true,
+      type: String, // "Yxwalds vrede"
+      required: true,
     },
     episodeNumber: {
-        type: Number, // 1
-        required: true,
+      type: Number,
+      required: true,
+      unique: true,
     },
     length: {
-        type: Number, // Get length from audio file
-        required: true,
+      type: Number, // Get length from audio file
+      required: true,
     },
     description: {
-        type: String, // "Ska kunna redigeras av användarna"
-        required: true,
+      type: String, // "Ska kunna redigeras av användarna"
+      required: true,
     },
     characters: {
-        type: [String], // Vilka karaktärer var med i episoden
-        required: true,
-        default: [],
+      type: [String], // Vilka karaktärer var med i episoden
+      required: true,
+      default: [],
     },
     players: {
-        type: [String], // Vilka spelare var med i episoden
-        required: true,
-        default: [],
+      type: [String], // Vilka spelare var med i episoden
+      required: true,
+      default: [],
     },
     gameMaster: {
-        type: String,
-        required: true,
+      type: String, //Vem var gamemaster i episoden
+      required: true,
     },
     poster: {
-        type: String,
-        required: true,
-        default: "https://res.cloudinary.com/dkccaruot/image/upload/v1722965887/oyswfgmlb5olqisiazsg.png",
+      type: String,
+      required: true,
+      default:
+        "https://res.cloudinary.com/dkccaruot/image/upload/v1722965887/oyswfgmlb5olqisiazsg.png",
     },
     audioFile: {
-        type: String,
-        required: true,
-        default: "",
+      type: String, // "https://res.cloudinary.com/dkccaruot/video/upload/v1722965887/oyswfgmlb5olqisiazsg.mp3"
+      required: true,
+      default: "",
     },
     rating: {
-        type: Number,
-        required: true,
-    }
-}, { timestamps: true });
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5, // Om det är ett 5-stjärnigt system
+    },
+    comments: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        text: {
+          type: String,
+          required: true,
+          maxlength: 500, // Maxlängd för kommentarer
+        },
+        timestamp: { type: Date, default: Date.now },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-const Episode = mongoose.model('Episode', episodeSchema);
+const Episode = mongoose.model("Episode", episodeSchema);
 
 export default Episode;
