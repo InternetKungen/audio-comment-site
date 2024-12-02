@@ -1,0 +1,40 @@
+.profile {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+
+  h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .profile-card {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .profile-field {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+
+      label {
+        font-weight: bold;
+        color: #555;
+      }
+
+      span {
+        color: #777;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}

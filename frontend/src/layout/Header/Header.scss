@@ -1,0 +1,39 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+
+  &__content {
+    display: flex;
+    align-items: center;
+  }
+
+  &__logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+
+    .header__icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: 1rem;
+
+      img {
+        width: 35px;
+        height: 35px;
+      }
+    }
+  }
+
+  .alert-popup {
+    color: red;
+    margin-top: 1rem;
+  }
+}

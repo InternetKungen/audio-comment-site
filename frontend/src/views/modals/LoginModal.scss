@@ -1,0 +1,127 @@
+.login-modal-background {
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.login-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: $color-modal-bg;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  border: 2px solid $color-primary-light;
+  width: 31.25rem;
+  color: $color-secondary;
+  max-width: 90%;
+  box-shadow: 0 0.125rem 0.63rem rgba(0, 0, 0, 0.8);
+  position: relative;
+  animation: open-modal-fade-in 0.3s ease-in-out;
+  @include text-stroke($color-primary-dark);
+  .close-button {
+    position: absolute;
+    top: -0.6rem;
+    right: 1rem;
+    font-size: 3.5rem;
+    cursor: pointer;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    .form-group {
+      min-width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      label {
+        align-self: flex-start;
+      }
+      input {
+        width: 100%;
+      }
+    }
+    button {
+      align-self: center;
+      min-width: 43%;
+    }
+  }
+  @keyframes open-modal-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// .modal-open {
+//   overflow: hidden;
+// }
+
+h2 {
+  margin-bottom: 1.25rem;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 0.938rem;
+}
+
+label {
+  margin-bottom: 0.313rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 0.063rem solid #ccc;
+  border-radius: 0.25rem;
+}
+.password-reset {
+  cursor: pointer;
+}
+.submit-button {
+  background-color: $color-secondary;
+  color: $color-primary-dark;
+  font-size: 1.25rem;
+  box-shadow: 0 0.125rem 0.313rem rgba(0, 0, 0, 0.8);
+  padding: 0.63rem 2.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  filter: brightness(1.1);
+  transition: all 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
