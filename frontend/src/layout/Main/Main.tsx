@@ -6,6 +6,8 @@ import ProtectedRoute from "../../ProtectedRoute";
 import "./Main.scss";
 import EpisodeLister from "../../components/EpisodeLister/EpisodeLister";
 import EpisodePage from "../../views/pages/EpisodePage/EpisodePage";
+import BackOffice from "../../views/auth/BackOffice/BackOffice";
+import AdminProtectedRoute from "../../AdminProtectedRoute";
 
 const Main: React.FC = () => {
   return (
@@ -17,6 +19,10 @@ const Main: React.FC = () => {
         <Route
           path="/profile"
           element={<ProtectedRoute element={<Profile />} />}
+        />
+        <Route
+          path="/back-office"
+          element={<AdminProtectedRoute element={<BackOffice />} />}
         />
         <Route path="*" element={<Home />} />
       </Routes>

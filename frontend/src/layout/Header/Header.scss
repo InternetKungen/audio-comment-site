@@ -1,4 +1,6 @@
 .header {
+  width: 100%;
+  background: red;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -7,6 +9,9 @@
   &__content {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    background-color: blue;
+    width: 100%;
   }
 
   &__logo {
@@ -33,7 +38,13 @@
   }
 
   .alert-popup {
-    color: red;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    @include text-stroke(black);
     margin-top: 1rem;
   }
 }

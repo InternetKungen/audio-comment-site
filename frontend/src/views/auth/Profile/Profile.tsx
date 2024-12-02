@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../../UserContext";
+import { Link } from "react-router-dom";
 import "./Profile.scss";
 
 const Profile: React.FC = () => {
@@ -26,6 +27,11 @@ const Profile: React.FC = () => {
           <span>{user.email}</span>
         </div>
       </div>
+      {user.role === "admin" && (
+        <Link to="/back-office">
+          <button className="back-office-button">Back Office</button>
+        </Link>
+      )}
     </div>
   );
 };
