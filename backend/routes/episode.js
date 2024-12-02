@@ -21,9 +21,9 @@ episodeRouter.get("/:id", getEpisodeById);
 episodeRouter.post("/", authUser, isAuthAdmin, createEpisode);
 
 // Update an episode
-episodeRouter.put("/:id", updateEpisode);
+episodeRouter.put("/:id", authUser, isAuthAdmin, updateEpisode);
 
 // Delete an episode
-episodeRouter.delete("/:id", deleteEpisode);
+episodeRouter.delete("/:id", authUser, isAuthAdmin, deleteEpisode);
 
 export default episodeRouter;
