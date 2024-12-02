@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.js";
 import episodeRouter from "./routes/episode.js";
 import userRouter from "./routes/user.js";
+import commentsRouter from "./routes/comments.js";
 import http from "http";
 import path from "path";
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/episode", episodeRouter);
 app.use("/api/user", userRouter);
+app.use("/api/comments", commentsRouter);
 
 // Servera statiska filer från dist-mappen
 const distPath = path.resolve("..", "frontend", "dist");
@@ -38,7 +40,6 @@ server.listen(process.env.PORT, async () => {
   try {
     connectDB();
     console.log("Server started at", process.env.PORT);
-
   } catch (error) {
     console.error("Server failed to start");
     process.exit(1);

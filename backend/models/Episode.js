@@ -50,21 +50,6 @@ const episodeSchema = new mongoose.Schema(
       min: 1,
       max: 5, // Om det är ett 5-stjärnigt system
     },
-    comments: [
-      {
-        userId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-          required: true,
-        },
-        text: {
-          type: String,
-          required: true,
-          maxlength: 500, // Maxlängd för kommentarer
-        },
-        timestamp: { type: Date, default: Date.now },
-      },
-    ],
   },
   { timestamps: true }
 );
