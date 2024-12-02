@@ -9,6 +9,18 @@ export const getAllEpisodes = async (req, res) => {
   }
 };
 
+export const getEpisodeById = async (req, res) => {
+  try {
+    const episode = await Episode.findById(req.params.id);
+    if (!episode) {
+      return res.status(404).json({ message: "Episode not found" });
+    }
+    res.json(episode);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch episode", error });
+  }
+};
+
 export const createEpisode = async (req, res) => {
   try {
     const episode = new Episode(req.body);

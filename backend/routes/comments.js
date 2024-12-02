@@ -1,4 +1,5 @@
 import express from "express";
+import { authUser } from "../middlewares/authUser.js";
 import {
   getCommentsByEpisode,
   createComment,
@@ -11,9 +12,9 @@ const commentsRouter = express.Router();
 commentsRouter.get("/:id", getCommentsByEpisode);
 
 // Skapa en kommentar för en episod
-commentsRouter.post("/:id", createComment);
+commentsRouter.post("/:id", authUser, createComment);
 
 // Ta bort en kommentar
-commentsRouter.delete("/:commentId", deleteComment);
+commentsRouter.delete("/:commentId", authUser, deleteComment);
 
 export default commentsRouter;
