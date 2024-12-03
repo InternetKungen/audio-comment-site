@@ -1,8 +1,9 @@
 .main {
   background: linear-gradient(
     to bottom,
-    $color-primary-light,
-    $color-primary-dark
+    $color-primary-dark,
+    $color-primary-light
   );
-  min-height: calc(100vh - 80px - 100px);
+  height: fit-content;
+  min-height: calc(100vh - ($header-height + $footer-height));
 }

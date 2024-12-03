@@ -1,0 +1,50 @@
+.episode-page {
+  background: transparent;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transform-style: preserve-3d;
+  color: $color-text-white;
+  @include text-stroke($color-primary-dark);
+  .episode-title {
+    color: $color-text-white;
+    @include text-stroke($color-primary-dark);
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    max-width: 500px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    span {
+      margin-right: 10px;
+    }
+  }
+  h1 {
+    color: $color-text-white;
+    @include text-stroke($color-primary-dark);
+    margin-bottom: 20px;
+  }
+  .episode-poster {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+  }
+  .episode-description {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+  }
+  .episode-audio {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+  }
+  p {
+    color: $color-text-white;
+    @include text-stroke($color-primary-dark);
+    padding-left: 20px;
+  }
+}

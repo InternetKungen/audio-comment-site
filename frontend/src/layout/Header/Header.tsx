@@ -7,12 +7,15 @@ import LoginIcon from "../../assets/icons/person_35dp_FCAF00_FILL0_wght400_GRAD0
 import LogoutIcon from "../../assets/icons/logout_35dp_FCAF00_FILL0_wght400_GRAD0_opsz40.png";
 import ProfileIcon from "../../assets/icons/clarify_35dp_FCAF00_FILL0_wght400_GRAD0_opsz40.png";
 import Logo from "../../assets/img/logo-dnd-site.png";
+import Popup from "../../components/Popup/Popup";
 
 const Header: React.FC = () => {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("login");
+  // const [alertPopup, setAlertPopup] = useState<string | null>(null);
+  const [logoutPopup, setLogoutPopup] = useState<string | null>(null);
   const [alertPopup, setAlertPopup] = useState<string | null>(null);
 
   const handleClose = () => setShowModal(false);
@@ -73,7 +76,24 @@ const Header: React.FC = () => {
       />
 
       {/* Popup för utloggning */}
-      {alertPopup && <p className="alert-popup">{alertPopup}</p>}
+      {logoutPopup && (
+        <div className="popup-overlay">
+          <Popup
+            title="Utloggad"
+            info={logoutPopup}
+            onClose={() => setLogoutPopup(null)}
+          />
+        </div>
+      )}
+      {alertPopup && (
+        <div className="popup-overlay">
+          <Popup
+            title=" "
+            info={alertPopup}
+            onClose={() => setAlertPopup(null)}
+          />
+        </div>
+      )}
     </header>
   );
 };
