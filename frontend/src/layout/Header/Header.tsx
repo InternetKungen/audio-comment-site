@@ -6,6 +6,7 @@ import { UserContext } from "../../UserContext";
 import LoginIcon from "../../assets/icons/person_35dp_FCAF00_FILL0_wght400_GRAD0_opsz40.png";
 import LogoutIcon from "../../assets/icons/logout_35dp_FCAF00_FILL0_wght400_GRAD0_opsz40.png";
 import ProfileIcon from "../../assets/icons/clarify_35dp_FCAF00_FILL0_wght400_GRAD0_opsz40.png";
+import Logo from "../../assets/img/logo-dnd-site.png";
 
 const Header: React.FC = () => {
   const { user, setUser } = useContext(UserContext);
@@ -39,8 +40,8 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="header__content">
         <Link to="/" className="header__logo">
-          {/* Lägg till din logotyp här */}
-          <h1>Logo</h1>
+          <img className="header__logo__img" src={Logo} alt="Logo" />
+          <h1>Dungeons & Dragons: Huvudsta</h1>
         </Link>
 
         <div className="header__actions">

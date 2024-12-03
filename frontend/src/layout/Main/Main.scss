@@ -1,0 +1,8 @@
+.main {
+  background: linear-gradient(
+    to bottom,
+    $color-primary-light,
+    $color-primary-dark
+  );
+  min-height: calc(100vh - 80px - 100px);
+}

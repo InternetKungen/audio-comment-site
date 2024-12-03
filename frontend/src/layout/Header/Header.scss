@@ -1,23 +1,39 @@
 .header {
   width: 100%;
-  background: red;
+  background: $color-primary-dark;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+  height: 80px;
 
   &__content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: blue;
+    background: transparent;
     width: 100%;
   }
 
   &__logo {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: bold;
     text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    color: $color-secondary-light;
+    @include text-stroke($color-secondary-dark);
+    -webkit-text-stroke: 1px $color-secondary;
+    h1 {
+      margin-left: 0.5rem;
+    }
+
+    &__img {
+      width: 80px;
+      height: 80px;
+    }
   }
 
   &__actions {
