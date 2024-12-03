@@ -6,6 +6,8 @@ import {
   updateEpisode,
   deleteEpisode,
 } from "../controllers/episodeController.js";
+import { authUser } from "../middlewares/authUser.js";
+import { isAuthAdmin } from "../middlewares/isAuthAdmin.js";
 
 const episodeRouter = express.Router();
 
@@ -16,12 +18,12 @@ episodeRouter.get("/", getAllEpisodes);
 episodeRouter.get("/:id", getEpisodeById);
 
 // Create a new episode
-episodeRouter.post("/", createEpisode);
+episodeRouter.post("/", authUser, isAuthAdmin, createEpisode);
 
 // Update an episode
-episodeRouter.put("/:id", updateEpisode);
+episodeRouter.put("/:id", authUser, isAuthAdmin, updateEpisode);
 
 // Delete an episode
-episodeRouter.delete("/:id", deleteEpisode);
+episodeRouter.delete("/:id", authUser, isAuthAdmin, deleteEpisode);
 
 export default episodeRouter;

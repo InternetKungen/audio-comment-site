@@ -1,0 +1,66 @@
+.header {
+  width: 100%;
+  background: $color-primary-dark;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  height: $header-height;
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    width: 100%;
+  }
+
+  &__logo {
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    color: $color-secondary-light;
+    @include text-stroke($color-secondary-dark);
+    -webkit-text-stroke: 1px $color-secondary;
+    h1 {
+      margin-left: 0.5rem;
+    }
+
+    &__img {
+      width: 80px;
+      height: 80px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+
+    .header__icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: 1rem;
+
+      img {
+        width: 35px;
+        height: 35px;
+      }
+    }
+  }
+
+  .alert-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    @include text-stroke(black);
+    margin-top: 1rem;
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "./EpisodePage.scss";
 
 interface Episode {
   _id: string;
@@ -40,11 +41,17 @@ const EpisodePage: React.FC = () => {
   if (!episode) return <p>Episode not found.</p>;
 
   return (
-    <div>
-      <h1>
-        #{episode.episodeNumber} - {episode.title}
+    <div className="episode-page">
+      <h1 className="episode-title">
+        <span>#{episode.episodeNumber} - </span>
+        <span>{episode.title}</span>
       </h1>
-      <img src={episode.poster} alt={`${episode.title} Poster`} width="300" />
+      <img
+        className="episode-poster"
+        src={episode.poster}
+        alt={`${episode.title} Poster`}
+        width="300"
+      />
       <p>{episode.description}</p>
       <p>
         <strong>Length:</strong> {episode.length} minutes

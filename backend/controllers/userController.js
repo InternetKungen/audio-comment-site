@@ -1,22 +1,27 @@
-
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 
 export const getUserInfo = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).populate("bookings").exec();
+    // Hämta användaren baserat på det inloggade användarens id
+    const user = await User.findById(req.user._id);
+
     console.log("User info endpoint hit");
+
+    // Om användaren inte finns, skicka en 404-status
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Remove the password field from the user object
+    // Ta bort lösenordet från användardata
     const { password, ...userWithoutPassword } = user.toObject();
 
+    // Skicka användardata utan lösenordet som svar
     res.status(200).json({ user: userWithoutPassword });
     console.log("User info sent");
   } catch (error) {
-    console.error("Error fetching user info:", error); // Log the error for debugging
+    // Logga och skicka ett serverfel om något går fel
+    console.error("Error fetching user info:", error);
     res.status(500).json({ error: "Server error" });
   }
 };

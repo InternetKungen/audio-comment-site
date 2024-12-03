@@ -1,36 +1,107 @@
 // Färgvariabler
-$color-primary-dark: #000F26;
-$color-primary-light: #045685;
-$color-secondary: #FCAF00;
-$color-select: #2cdf8c;
-$color-highlight: #028ed9;
-$color-error: #FC3824;
-$color-white: #ffffff;
+$color-primary-dark: #011524;
+$color-primary-light: #224674;
+$color-secondary: #f3c78f;
+$color-secondary-dark: #a6734b;
+$color-secondary-light: #fafcf4;
+$color-select: #a92929;
+$color-select-dark: #49113e;
+$color-highlight: #ee3efc;
+$color-error: #ee2f26;
+$color-error-light: #fa9c26;
+$color-white: #fafcf4;
 $color-border-light: #ddd;
-$color-text-white: white;
-$color-text-dark: #000F26;
+$color-text-white: #fafcf4;
+$color-text-dark: #011524;
 $color-alert-success-bg: #d4edda;
 $color-alert-success-text: #155724;
 $color-alert-error-bg: #f8d7da;
 $color-alert-error-text: #721c24;
 $color-unavailable-seat: #795400;
 $color-email-input-border: #ddd;
-$color-age-box-border: #FC3824;
-$color-modal-bg: linear-gradient(to right, $color-primary-dark, $color-primary-light, $color-primary-dark);
+$color-age-box-border: #fc3824;
+$color-modal-bg: linear-gradient(
+  to right,
+  $color-primary-dark,
+  $color-primary-light,
+  $color-primary-dark
+);
 
 // Bakgrundsgradienter
-$bg-gradient-info: linear-gradient(to bottom, $color-primary-light, $color-primary-dark 20%);
-$bg-gradient-ticket-counts: linear-gradient(to right, $color-primary-dark, $color-primary-light, $color-primary-dark);
-$bg-gradient-contact-info: linear-gradient(to right, $color-primary-dark, $color-primary-light, $color-primary-dark);
-$bg-gradient-modal: linear-gradient(to right, $color-primary-dark, $color-primary-light, $color-primary-dark);
-$bg-gradient-total-amount: linear-gradient(to bottom, $color-secondary, $color-white);
-$bg-gradient-hall-title: linear-gradient(to bottom, $color-secondary, $color-error 80%, $color-secondary);
-$bg-color-showtime-odd: linear-gradient(to right, $color-primary-dark, $color-primary-light);
-$bg-color-showtime-even: linear-gradient(to right, $color-primary-light, $color-primary-dark);
-$bg-color-showtime-hover-odd: linear-gradient(to right, $color-highlight,$color-primary-light);
-$bg-color-showtime-hover-even: linear-gradient(to right, $color-highlight, $color-primary-dark);
-$bg-gradient-movie-button: linear-gradient(to bottom, $color-primary-light 80%, $color-primary-dark);
-$bg-gradient-movie-button-highlight: linear-gradient(to bottom, $color-highlight 80%, $color-primary-dark);
+$bg-gradient-info: linear-gradient(
+  to bottom,
+  $color-primary-light,
+  $color-primary-dark 20%
+);
+$bg-gradient-ticket-counts: linear-gradient(
+  to right,
+  $color-primary-dark,
+  $color-primary-light,
+  $color-primary-dark
+);
+$bg-gradient-contact-info: linear-gradient(
+  to right,
+  $color-primary-dark,
+  $color-primary-light,
+  $color-primary-dark
+);
+$bg-gradient-modal: linear-gradient(
+  to right,
+  $color-primary-dark,
+  $color-primary-light,
+  $color-primary-dark
+);
+$bg-gradient-total-amount: linear-gradient(
+  to bottom,
+  $color-secondary,
+  $color-white
+);
+$bg-gradient-hall-title: linear-gradient(
+  to bottom,
+  $color-secondary,
+  $color-error 80%,
+  $color-secondary
+);
+$bg-color-showtime-odd: linear-gradient(
+  to right,
+  $color-primary-dark,
+  $color-primary-light
+);
+$bg-color-showtime-even: linear-gradient(
+  to right,
+  $color-primary-light,
+  $color-primary-dark
+);
+$bg-color-showtime-hover-odd: linear-gradient(
+  to right,
+  $color-highlight,
+  $color-primary-light
+);
+$bg-color-showtime-hover-even: linear-gradient(
+  to right,
+  $color-highlight,
+  $color-primary-dark
+);
+$bg-gradient-movie-button: linear-gradient(
+  to bottom,
+  $color-primary-light 80%,
+  $color-primary-dark
+);
+$bg-gradient-movie-button-highlight: linear-gradient(
+  to bottom,
+  $color-highlight 80%,
+  $color-primary-dark
+);
 
 // Border Image
-$border-image-poster: linear-gradient(to bottom, $color-primary-dark, $color-primary-light);
+$border-image-poster: linear-gradient(
+  to bottom,
+  $color-primary-dark,
+  $color-primary-light
+);
+
+//Header
+$header-height: 100px;
+
+//Footer
+$footer-height: 100px;
