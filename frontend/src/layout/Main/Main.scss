@@ -6,4 +6,7 @@
   );
   height: fit-content;
   min-height: calc(100vh - ($header-height + $footer-height));
+  display: flex;
+  justify-content: center;
+  align-items: start;
 }

@@ -28,6 +28,11 @@ $color-modal-bg: linear-gradient(
 );
 
 // Bakgrundsgradienter
+$bg-gradient-episode: linear-gradient(
+  to bottom,
+  $color-secondary-dark,
+  $color-secondary-light
+);
 $bg-gradient-info: linear-gradient(
   to bottom,
   $color-primary-light,

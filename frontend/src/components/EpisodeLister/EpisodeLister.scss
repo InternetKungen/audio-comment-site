@@ -25,11 +25,7 @@
         color: inherit; // Ärva textfärg från omgivande element
       }
       .episode-card {
-        background: linear-gradient(
-          to bottom,
-          $color-secondary-dark,
-          $color-secondary-light
-        );
+        background: $bg-gradient-episode;
         color: $color-text-white;
         @include text-stroke($color-primary-dark);
         width: 100%;

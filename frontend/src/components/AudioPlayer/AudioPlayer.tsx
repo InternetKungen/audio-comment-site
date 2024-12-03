@@ -1,103 +1,84 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useAudioContext } from "../../AudioContext";
 import "./AudioPlayer.scss";
 
 interface AudioPlayerProps {
-  audioFile: string | null;
+  audioFile: string;
 }
 
 const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile }) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1); // Standardvolym (1 = 100%)
 
-  const localStorageKey = `audio-player-${audioFile}`;
+  const {
+    currentAudioFile,
+    isPlaying,
+    setAudioFile,
+    togglePlayPause,
+    setVolume,
+    volume,
+    audioRef, // Hämta ref från AudioContext
+  } = useAudioContext();
 
-  // Återställ senaste tid och volym från localStorage
+  const localStorageKey = `audio-${audioFile}-time`;
+
   useEffect(() => {
-    if (audioFile && audioRef.current) {
-      const savedTime = parseFloat(
-        localStorage.getItem(localStorageKey) || "0"
-      );
-      if (!isNaN(savedTime) && savedTime > 0) {
-        audioRef.current.currentTime = savedTime;
-        setCurrentTime(savedTime);
-      }
-
-      const savedVolume = parseFloat(
-        localStorage.getItem("audio-player-volume") || "1"
-      );
-      if (!isNaN(savedVolume)) {
-        setVolume(savedVolume);
-        if (audioRef.current) audioRef.current.volume = savedVolume;
-      }
-
-      // Försök att spela upp ljudet automatiskt
-      audioRef.current
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch((err) => console.error("Autoplay failed:", err));
+    const savedTime = localStorage.getItem(localStorageKey);
+    if (savedTime && audioRef.current) {
+      audioRef.current.currentTime = parseFloat(savedTime);
+      setCurrentTime(parseFloat(savedTime));
     }
-  }, [audioFile]);
+  }, [audioFile, audioRef]);
 
-  // Uppdatera currentTime och spara i localStorage
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      const time = audioRef.current.currentTime;
-      setCurrentTime(time);
-      localStorage.setItem(localStorageKey, time.toString());
-    }
-  };
+  useEffect(() => {
+    if (!audioRef.current) return;
 
-  const handleLoadedMetadata = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
-    }
-  };
+    const audio = audioRef.current;
+
+    // Uppdatera duration när metadata laddas
+    const updateDuration = () => setDuration(audio.duration);
+
+    // Uppdatera currentTime när ljudet spelar
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+      // Spara aktuell tid i localStorage
+      localStorage.setItem(localStorageKey, audio.currentTime.toString());
+    };
+
+    // Lägg till event listeners
+    audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("timeupdate", updateTime);
+
+    // Rensa event listeners vid avmontering
+    return () => {
+      audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("timeupdate", updateTime);
+    };
+  }, [audioRef]);
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (audioRef.current) {
       const newTime = parseFloat(e.target.value);
       audioRef.current.currentTime = newTime;
       setCurrentTime(newTime);
-      localStorage.setItem(localStorageKey, newTime.toString());
     }
-  };
-
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-    localStorage.setItem("audio-player-volume", newVolume.toString());
+    setVolume(parseFloat(e.target.value));
   };
 
-  if (!audioFile) {
-    return null;
-  }
+  const handlePlayPause = () => {
+    if (currentAudioFile !== audioFile) {
+      setAudioFile(audioFile);
+    }
+    togglePlayPause();
+  };
 
   return (
     <div className="audio-player">
-      <audio
-        ref={audioRef}
-        src={audioFile}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-      />
-      <button onClick={togglePlay} className="play-button">
-        {isPlaying
+      <button onClick={handlePlayPause} className="play-button">
+        {isPlaying && currentAudioFile === audioFile
           ? String.fromCharCode(10074, 10074)
           : String.fromCharCode(9654)}
       </button>

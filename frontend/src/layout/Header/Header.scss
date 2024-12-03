@@ -24,9 +24,10 @@
     align-items: center;
     flex-direction: row;
     color: $color-secondary-light;
-    @include text-stroke($color-secondary-dark);
-    -webkit-text-stroke: 1px $color-secondary;
+    @include text-stroke($color-primary-dark);
+    -webkit-text-stroke: 0.003rem $color-secondary-dark;
     h1 {
+      font-family: "MedievalSharp", serif;
       margin-left: 0.5rem;
     }
 

@@ -15,7 +15,8 @@ interface Episode {
 const EpisodeLister: React.FC = () => {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { setAudioFile } = useAudioContext();
+  const { currentAudioFile, isPlaying, setAudioFile, togglePlayPause } =
+    useAudioContext();
 
   useEffect(() => {
     const fetchEpisodes = async () => {
@@ -40,38 +41,45 @@ const EpisodeLister: React.FC = () => {
     <div className="episode-lister">
       <h1>Episodes</h1>
       <ul>
-        {episodes.map((episode) => (
-          <li key={episode._id}>
-            <Link to={`/episode/${episode._id}`}>
-              <div className="episode-card">
-                <div className="episode-info">
-                  <h2 className="episode-title">
-                    #{episode.episodeNumber} - {episode.title}
-                  </h2>
-                  <p className="episode-description">{episode.description}</p>
+        {episodes.map((episode) => {
+          const isCurrentPlaying =
+            currentAudioFile === episode.audioFile && isPlaying;
+
+          return (
+            <li key={episode._id}>
+              <Link to={`/episode/${episode._id}`}>
+                <div className="episode-card">
+                  <div className="episode-info">
+                    <h2 className="episode-title">
+                      #{episode.episodeNumber} - {episode.title}
+                    </h2>
+                    <p className="episode-description">{episode.description}</p>
+                  </div>
+                  <div className="episode-poster">
+                    <img
+                      src={episode.poster}
+                      alt={`${episode.title} Poster`}
+                      width="200"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="play-button"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      currentAudioFile === episode.audioFile
+                        ? togglePlayPause()
+                        : setAudioFile(episode.audioFile);
+                    }}
+                  >
+                    {isCurrentPlaying ? "⏸" : "▶"}
+                  </button>
                 </div>
-                <div className="episode-poster">
-                  <img
-                    src={episode.poster}
-                    alt={`${episode.title} Poster`}
-                    width="200"
-                  />
-                </div>
-                <button
-                  type="button"
-                  className="play-button"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    setAudioFile(episode.audioFile);
-                  }}
-                >
-                  &#9654;
-                </button>
-              </div>
-            </Link>
-          </li>
-        ))}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

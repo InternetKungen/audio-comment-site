@@ -1,18 +1,28 @@
 .episode-page {
-  background: transparent;
+  background: $bg-gradient-episode;
   width: 100%;
+  max-width: 654.969px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   transform-style: preserve-3d;
   color: $color-text-white;
   @include text-stroke($color-primary-dark);
+  border: 3px solid $color-secondary;
+  border-radius: 5px;
+  position: relative;
+  min-height: 225px;
   .episode-title {
+    span:first-of-type {
+      font-family: "Roboto", sans-serif;
+    }
+    font-family: "MedievalSharp", serif;
     color: $color-text-white;
     @include text-stroke($color-primary-dark);
     width: 100%;
     padding-left: 20px;
     padding-right: 20px;
+    padding-top: 20px;
     max-width: 500px;
     display: flex;
     flex-direction: row;
@@ -31,16 +41,41 @@
     width: 100%;
     max-width: 500px;
     margin-bottom: 20px;
+    border-radius: 5px;
+    background: $bg-gradient-movie-button;
+    height: 200px;
+    width: 160px;
+    right: 10px;
+    top: 10px;
+    position: absolute;
   }
-  .episode-description {
+  p {
     width: 100%;
     max-width: 500px;
     margin-bottom: 20px;
+    font-family: "Caudex", serif;
   }
-  .episode-audio {
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 20px;
+  .play-button {
+    background-color: $color-secondary;
+    color: $color-primary-dark;
+    font-size: 1.25rem;
+    box-shadow: 0 0.125rem 0.313rem rgba(0, 0, 0, 0.8);
+    width: 3rem;
+    height: 3rem;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    &:hover {
+      background-color: $color-secondary-light;
+    }
   }
   p {
     color: $color-text-white;
