@@ -1,10 +1,14 @@
 import React from "react";
+import { useAudioContext } from "../../AudioContext";
+import AudioPlayer from "../../components/AudioPlayer/AudioPlayer";
 import "./Footer.scss";
 
 const Footer: React.FC = () => {
+  const { currentAudioFile } = useAudioContext();
+
   return (
     <footer className="footer">
-      <p>Footer</p>
+      {currentAudioFile && <AudioPlayer audioFile={currentAudioFile} />}
     </footer>
   );
 };

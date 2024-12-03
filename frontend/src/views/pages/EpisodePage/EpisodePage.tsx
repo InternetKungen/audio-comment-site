@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAudioContext } from "../../../AudioContext";
 import "./EpisodePage.scss";
 
 interface Episode {
@@ -12,6 +13,7 @@ interface Episode {
   characters: string[];
   players: string[];
   gameMaster: string;
+  audioFile: string;
   rating: number;
 }
 
@@ -19,6 +21,8 @@ const EpisodePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const { currentAudioFile, isPlaying, setAudioFile, togglePlayPause } =
+    useAudioContext();
 
   useEffect(() => {
     const fetchEpisode = async () => {
@@ -40,34 +44,53 @@ const EpisodePage: React.FC = () => {
   if (loading) return <p>Loading episode...</p>;
   if (!episode) return <p>Episode not found.</p>;
 
+  const isCurrentPlaying = currentAudioFile === episode.audioFile && isPlaying;
+
   return (
     <div className="episode-page">
       <h1 className="episode-title">
         <span>#{episode.episodeNumber} - </span>
         <span>{episode.title}</span>
       </h1>
-      <img
-        className="episode-poster"
-        src={episode.poster}
-        alt={`${episode.title} Poster`}
-        width="300"
-      />
-      <p>{episode.description}</p>
-      <p>
-        <strong>Length:</strong> {episode.length} minutes
-      </p>
-      <p>
-        <strong>Game Master:</strong> {episode.gameMaster}
-      </p>
-      <p>
-        <strong>Characters:</strong> {episode.characters.join(", ")}
-      </p>
-      <p>
-        <strong>Players:</strong> {episode.players.join(", ")}
-      </p>
-      <p>
+      <div className="episode-poster">
+        <img
+          className="episode-poster__image"
+          src={episode.poster}
+          alt={`${episode.title} Poster`}
+          width="300"
+        />
+      </div>
+      <div className="episode-info">
+        <p>{episode.description}</p>
+        <p>
+          <strong>Length:</strong> {episode.length} minutes
+        </p>
+        <p>
+          <strong>Game Master:</strong> {episode.gameMaster}
+        </p>
+        <p>
+          <strong>Characters:</strong> {episode.characters.join(", ")}
+        </p>
+        <p>
+          <strong>Players:</strong> {episode.players.join(", ")}
+        </p>
+      </div>
+      <div className="episode-audio">
+        <button
+          type="button"
+          className="play-button"
+          onClick={() =>
+            currentAudioFile === episode.audioFile
+              ? togglePlayPause()
+              : setAudioFile(episode.audioFile)
+          }
+        >
+          {isCurrentPlaying ? "⏸" : "▶"}
+        </button>
+      </div>
+      {/* <p>
         <strong>Rating:</strong> {episode.rating}/5
-      </p>
+      </p> */}
     </div>
   );
 };
