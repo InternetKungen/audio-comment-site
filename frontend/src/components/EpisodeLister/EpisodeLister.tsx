@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./EpisodeLister.scss";
+import { useAudioContext } from "../../AudioContext";
 
 interface Episode {
   _id: string;
@@ -14,6 +15,7 @@ interface Episode {
 const EpisodeLister: React.FC = () => {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { setAudioFile } = useAudioContext();
 
   useEffect(() => {
     const fetchEpisodes = async () => {
@@ -55,9 +57,17 @@ const EpisodeLister: React.FC = () => {
                     width="200"
                   />
                 </div>
-                <div className="episode-audio">
-                  <audio src={episode.audioFile} controls />
-                </div>
+                <button
+                  type="button"
+                  className="play-button"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setAudioFile(episode.audioFile);
+                  }}
+                >
+                  &#9654;
+                </button>
               </div>
             </Link>
           </li>
