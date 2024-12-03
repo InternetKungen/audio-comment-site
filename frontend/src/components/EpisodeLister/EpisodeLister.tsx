@@ -68,9 +68,15 @@ const EpisodeLister: React.FC = () => {
                     onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();
-                      currentAudioFile === episode.audioFile
-                        ? togglePlayPause()
-                        : setAudioFile(episode.audioFile);
+
+                      if (currentAudioFile === episode.audioFile) {
+                        // Om det redan är samma fil, toggla play/pause
+                        togglePlayPause();
+                      } else {
+                        // Om det är en ny fil, sätt filen och starta uppspelningen
+                        setAudioFile(episode.audioFile);
+                        setTimeout(() => togglePlayPause(), 0); // Säkerställer att togglePlayPause körs efter setAudioFile
+                      }
                     }}
                   >
                     {isCurrentPlaying ? "⏸" : "▶"}
