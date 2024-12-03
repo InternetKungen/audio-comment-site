@@ -10,10 +10,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1); // Standardvolym (1 = 100%)
 
   const localStorageKey = `audio-player-${audioFile}`;
 
-  // Återställ senaste tid från localStorage
+  // Återställ senaste tid och volym från localStorage
   useEffect(() => {
     if (audioFile && audioRef.current) {
       const savedTime = parseFloat(
@@ -22,6 +23,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile }) => {
       if (!isNaN(savedTime) && savedTime > 0) {
         audioRef.current.currentTime = savedTime;
         setCurrentTime(savedTime);
+      }
+
+      const savedVolume = parseFloat(
+        localStorage.getItem("audio-player-volume") || "1"
+      );
+      if (!isNaN(savedVolume)) {
+        setVolume(savedVolume);
+        if (audioRef.current) audioRef.current.volume = savedVolume;
       }
 
       // Försök att spela upp ljudet automatiskt
@@ -66,6 +75,15 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile }) => {
     setIsPlaying(!isPlaying);
   };
 
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+    }
+    localStorage.setItem("audio-player-volume", newVolume.toString());
+  };
+
   if (!audioFile) {
     return null;
   }
@@ -91,6 +109,16 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile }) => {
         value={currentTime}
         onChange={handleSeek}
         className="progress-bar"
+      />
+      <input
+        title="volume"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={volume}
+        onChange={handleVolumeChange}
+        className="volume-control"
       />
       <span className="time-display">
         {formatTime(currentTime)} / {formatTime(duration)}
