@@ -79,7 +79,9 @@ const EpisodeLister: React.FC = () => {
                       }
                     }}
                   >
-                    {isCurrentPlaying ? "⏸" : "▶"}
+                    {isCurrentPlaying
+                      ? String.fromCharCode(10074, 10074)
+                      : String.fromCharCode(9654)}
                   </button>
                 </div>
               </Link>

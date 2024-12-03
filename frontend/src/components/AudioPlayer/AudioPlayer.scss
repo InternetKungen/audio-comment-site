@@ -21,7 +21,11 @@
   }
 
   .play-button {
-    background: $color-secondary;
+    background: radial-gradient(
+      circle,
+      $color-secondary,
+      $color-secondary-dark
+    );
     color: $color-primary-dark;
     border: none;
     padding: 10px 15px;
@@ -37,8 +41,12 @@
     box-shadow: 0 0.125rem 0.313rem $color-secondary-dark;
 
     &:hover {
-      background-color: #555;
-      box-shadow: 0 0.125rem 0.313rem $color-primary-dark;
+      background: radial-gradient(
+        circle,
+        $color-secondary-light,
+        $color-secondary
+      );
+      box-shadow: 0 0.125rem 0.313rem $color-primary-light;
     }
   }
 

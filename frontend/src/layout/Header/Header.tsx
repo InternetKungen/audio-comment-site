@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Header.scss";
 import LoginModal from "../../views/modals/LoginModal";
 import { UserContext } from "../../UserContext";
-import LoginIcon from "../../assets/icons/person_35dp_FCAF00_FILL0_wght400_GRAD0_opsz40.png";
-import LogoutIcon from "../../assets/icons/logout_35dp_FCAF00_FILL0_wght400_GRAD0_opsz40.png";
-import ProfileIcon from "../../assets/icons/clarify_35dp_FCAF00_FILL0_wght400_GRAD0_opsz40.png";
+import LoginIcon from "../../assets/icons/person_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
+import LogoutIcon from "../../assets/icons/logout_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
+import ProfileIcon from "../../assets/icons/clarify_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 import Logo from "../../assets/img/logo-dnd-site.png";
 import Popup from "../../components/Popup/Popup";
 
