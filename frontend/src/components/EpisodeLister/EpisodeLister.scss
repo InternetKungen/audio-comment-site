@@ -113,3 +113,50 @@
     }
   }
 }
+
+.sorting-controls {
+  color: $color-secondary;
+  position: absolute;
+  top: 0;
+  right: -35%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: start;
+  // margin-bottom: 20px;
+  flex-direction: row-reverse;
+  background: transparent;
+  label {
+    color: $color-secondary;
+    margin-right: 10px;
+  }
+  img {
+    width: 35px;
+    height: 35px;
+    margin-top: -2px;
+  }
+
+  select {
+    color: $color-secondary;
+    background: transparent;
+    padding: 5px;
+    border: none;
+    font-size: 1.2rem;
+    option {
+      background: $color-primary-dark;
+    }
+  }
+}
+
+.recent-icon {
+  width: 50px;
+  height: 50px;
+  background: url("../../assets/icons/schedule_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png");
+  background-size: cover;
+}
+
+.episode-number-icon {
+  width: 50px;
+  height: 50px;
+  background: url("../../assets/icons/tag_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png");
+  background-size: cover;
+}
