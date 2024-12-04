@@ -3,12 +3,19 @@ import { useAudioContext } from "../../AudioContext";
 import AudioPlayer from "../../components/AudioPlayer/AudioPlayer";
 import "./Footer.scss";
 
+interface Episode {
+  episodeNumber: number;
+  title: string;
+}
+
 const Footer: React.FC = () => {
-  const { currentAudioFile } = useAudioContext();
+  const { currentAudioFile, currentEpisode } = useAudioContext();
 
   return (
     <footer className="footer">
-      {currentAudioFile && <AudioPlayer audioFile={currentAudioFile} />}
+      {currentAudioFile && currentEpisode && (
+        <AudioPlayer audioFile={currentAudioFile} episode={currentEpisode} />
+      )}
     </footer>
   );
 };

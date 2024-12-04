@@ -80,15 +80,15 @@ const EpisodePage: React.FC = () => {
           type="button"
           className="play-button"
           onClick={() => {
-            // event.preventDefault();
-            // event.stopPropagation();
-
             if (currentAudioFile === episode.audioFile) {
               // Om det redan är samma fil, toggla play/pause
               togglePlayPause();
             } else {
               // Om det är en ny fil, sätt filen och starta uppspelningen
-              setAudioFile(episode.audioFile);
+              setAudioFile(episode.audioFile, {
+                episodeNumber: episode.episodeNumber,
+                title: episode.title,
+              });
               setTimeout(() => togglePlayPause(), 0); // Säkerställer att togglePlayPause körs efter setAudioFile
             }
           }}

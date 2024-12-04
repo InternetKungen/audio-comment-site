@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useAudioContext } from "../../AudioContext";
 import "./AudioPlayer.scss";
 
-interface AudioPlayerProps {
-  audioFile: string;
+interface Episode {
+  episodeNumber: number;
+  title: string;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile }) => {
+interface AudioPlayerProps {
+  audioFile: string;
+  episode: Episode;
+}
+
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile, episode }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -17,7 +23,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile }) => {
     togglePlayPause,
     setVolume,
     volume,
-    audioRef, // Hämta ref från AudioContext
+    audioRef,
   } = useAudioContext();
 
   const localStorageKey = `audio-${audioFile}-time`;
@@ -70,13 +76,16 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile }) => {
 
   const handlePlayPause = () => {
     if (currentAudioFile !== audioFile) {
-      setAudioFile(audioFile);
+      setAudioFile(audioFile, episode);
     }
     togglePlayPause();
   };
 
   return (
     <div className="audio-player">
+      <div className="episode-info">
+        <h3>{`# ${episode.episodeNumber}: ${episode.title}`}</h3>
+      </div>
       <button onClick={handlePlayPause} className="play-button">
         {isPlaying && currentAudioFile === audioFile
           ? String.fromCharCode(10074, 10074)
