@@ -16,17 +16,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: $color-modal-bg;
+  background: linear-gradient(
+    to bottom,
+    $color-secondary-dark,
+    $color-primary-light
+  );
   padding: 1.25rem;
   border-radius: 0.5rem;
   border: 2px solid $color-primary-light;
   width: 31.25rem;
   color: $color-secondary;
   max-width: 90%;
-  box-shadow: 0 0.125rem 0.63rem rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0.125rem 0.63rem $color-error-light;
   position: relative;
   animation: open-modal-fade-in 0.3s ease-in-out;
   @include text-stroke($color-primary-dark);
+  h2 {
+    margin-bottom: 1.25rem;
+  }
   .close-button {
     position: absolute;
     top: -0.6rem;
@@ -55,7 +62,8 @@
     }
     button {
       align-self: center;
-      min-width: 43%;
+      min-width: 53%;
+      margin: 15px 0;
     }
   }
   @keyframes open-modal-fade-in {
@@ -68,14 +76,6 @@
       transform: translateY(0);
     }
   }
-}
-
-// .modal-open {
-//   overflow: hidden;
-// }
-
-h2 {
-  margin-bottom: 1.25rem;
 }
 
 .form-group {
