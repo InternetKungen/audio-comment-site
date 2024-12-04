@@ -253,6 +253,35 @@ const BackOffice: React.FC = () => {
     }
   };
 
+  const handleDeleteEpisode = async () => {
+    if (!selectedEpisodeId) {
+      setFeedback("Ingen episod vald att ta bort.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/episode/${selectedEpisodeId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Kunde inte ta bort episoden.");
+      }
+
+      // Ta bort episoden från state
+      const updatedEpisodes = episodes.filter(
+        (ep) => ep._id !== selectedEpisodeId
+      );
+      setEpisodes(updatedEpisodes);
+
+      // Rensa formuläret och återställ vald episod
+      clearForm();
+      setFeedback("Episoden har tagits bort.");
+    } catch (error: any) {
+      setFeedback(error.message || "Ett fel uppstod vid borttagning.");
+    }
+  };
+
   const clearForm = () => {
     setSelectedEpisodeId(null);
     setTitle("");
@@ -374,12 +403,23 @@ const BackOffice: React.FC = () => {
                 onChange={(e) => setDateOfRecording(e.target.value)}
               />
             </div>
-            <button type="submit">
-              {selectedEpisodeId ? "Uppdatera Episod" : "Skapa Episod"}
-            </button>
-            <button type="button" onClick={clearForm}>
-              Rensa Formulär
-            </button>
+            <div className="form-actions">
+              <button type="submit">
+                {selectedEpisodeId ? "Uppdatera Episod" : "Skapa Episod"}
+              </button>
+              <button type="button" onClick={clearForm}>
+                Rensa Formulär
+              </button>
+              {selectedEpisodeId && (
+                <button
+                  type="button"
+                  onClick={handleDeleteEpisode}
+                  className="delete-button"
+                >
+                  Ta Bort Episod
+                </button>
+              )}
+            </div>
           </form>
           {feedback && <p className="feedback">{feedback}</p>}
         </div>

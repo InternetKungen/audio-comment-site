@@ -1,5 +1,4 @@
 .footer {
-  background: transparent;
   color: $color-white;
   height: $footer-height;
   display: flex;
@@ -9,4 +8,7 @@
   bottom: 0;
   width: 100%;
   z-index: 1000;
+
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
 }
