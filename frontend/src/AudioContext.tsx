@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useMemo,
+} from "react";
 
 interface Episode {
   episodeNumber: number;
@@ -60,19 +66,31 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     if (audioRef.current) audioRef.current.volume = volume;
   };
 
+  const audioContextValue = useMemo(
+    () => ({
+      currentAudioFile,
+      currentEpisode,
+      isPlaying,
+      volume,
+      audioRef,
+      setAudioFile,
+      togglePlayPause,
+      setVolume: handleVolumeChange,
+    }),
+    [
+      currentAudioFile,
+      currentEpisode,
+      isPlaying,
+      volume,
+      audioRef,
+      setAudioFile,
+      togglePlayPause,
+      handleVolumeChange,
+    ]
+  );
+
   return (
-    <AudioContext.Provider
-      value={{
-        currentAudioFile,
-        currentEpisode,
-        isPlaying,
-        volume,
-        audioRef,
-        setAudioFile,
-        togglePlayPause,
-        setVolume: handleVolumeChange,
-      }}
-    >
+    <AudioContext.Provider value={audioContextValue}>
       {children}
     </AudioContext.Provider>
   );

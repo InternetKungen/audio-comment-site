@@ -68,3 +68,13 @@
   margin-top: 20px;
   font-weight: bold;
 }
+
+.delete-button {
+  background-color: #ff4d4d;
+  color: white;
+  margin-left: 10px;
+
+  &:hover {
+    background-color: #ff1a1a;
+  }
+}
