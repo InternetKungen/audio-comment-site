@@ -1,0 +1,133 @@
+.comment-section {
+  background: linear-gradient(
+    to bottom,
+    $color-secondary,
+    $color-secondary-dark
+  );
+  border-radius: 0 0 5px 5px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+
+  .comment-header {
+    border-bottom: 1px solid $color-secondary;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+
+    h2 {
+      color: $color-primary-dark;
+      @include text-stroke($color-secondary-light);
+      font-size: 1.2rem;
+      margin: 0;
+    }
+  }
+
+  .comment-content {
+    .login-prompt {
+      color: $text-secondary;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .comment-input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+
+      .comment-textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 10px;
+        border: 1px solid $border-color;
+        border-radius: 4px;
+        resize: vertical;
+        font-size: 0.9rem;
+      }
+
+      .comment-submit-btn {
+        background-color: $color-secondary-dark;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        border: 2px solid $color-secondary-light;
+
+        &:hover {
+          background: $color-error-light;
+          color: $color-primary-dark;
+        }
+        align-self: flex-start;
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          &:hover {
+            background-color: $color-primary-light;
+          }
+        }
+      }
+    }
+
+    .comments-list {
+      .no-comments {
+        color: $color-secondary-light;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .comment-item {
+        background-color: $background-light-alt;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 15px;
+        position: relative;
+
+        .comment-header-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+
+          .comment-user {
+            font-weight: bold;
+            color: $color-primary-dark;
+            @include text-stroke($color-secondary-light);
+          }
+
+          .comment-delete-btn {
+            background-color: transparent;
+            color: $color-primary-dark;
+            border: 1px solid $secondary-color;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background-color: $secondary-color;
+              color: white;
+            }
+            font-size: 0.8rem;
+          }
+        }
+
+        .comment-text {
+          color: $text-primary;
+          margin-bottom: 10px;
+          @include text-stroke($color-secondary-light);
+        }
+
+        .comment-timestamp {
+          color: $text-secondary;
+          font-size: 0.8rem;
+          @include text-stroke($color-secondary-light);
+        }
+      }
+    }
+  }
+}

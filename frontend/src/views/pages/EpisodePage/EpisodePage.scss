@@ -92,13 +92,7 @@
       object-fit: cover;
     }
   }
-  p {
-    width: 100%;
-    margin-bottom: 20px;
-    font-family: "Caudex", serif;
-    max-width: 90%;
-    padding-left: 20px;
-  }
+
   .play-button {
     background-color: $color-secondary;
     color: $color-primary-dark;
@@ -115,14 +109,31 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-    right: 0.5rem;
-    bottom: 0.5rem;
+    right: 20px;
+    top: 220px;
     &:hover {
       background-color: $color-secondary-light;
     }
+    @media screen and (max-width: 768px) {
+      top: 170px;
+    }
+  }
+  .episode-description {
+    width: 70%;
+    margin-bottom: 20px;
+    margin-top: 40px;
+    padding-left: 20px;
+    font-family: "Caudex", serif;
   }
   .episode-info {
     width: 70%;
+    p {
+      width: 100%;
+      margin-bottom: 10px;
+      font-family: "Caudex", serif;
+      max-width: 90%;
+      padding-left: 20px;
+    }
   }
   .episode-audio {
     display: flex;
@@ -133,7 +144,7 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 5px;
+      padding: 5px 15px;
 
       .download-icon {
         width: 30px;

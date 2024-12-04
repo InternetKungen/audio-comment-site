@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./EpisodeLister.scss";
 import { useAudioContext } from "../../AudioContext";
-import recentIcon from "../../assets/icons/schedule_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
-import episodeNumberIcon from "../../assets/icons/tag_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
+// import recentIcon from "../../assets/icons/schedule_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
+// import episodeNumberIcon from "../../assets/icons/tag_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 import sortIcon from "../../assets/icons/sort_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 
 interface Episode {
@@ -78,15 +78,15 @@ const EpisodeLister: React.FC = () => {
         >
           <option value="recent">
             🕔
-            <span className="recent-icon">
+            {/* <span className="recent-icon">
               <img src={recentIcon} alt="Recent Icon" />
-            </span>
+            </span> */}
           </option>
           <option value="episodeAsc">
             #
-            <span className="episode-number-icon">
+            {/* <span className="episode-number-icon">
               <img src={episodeNumberIcon} alt="Episode Number Icon" />
-            </span>
+            </span> */}
           </option>
         </select>
       </div>

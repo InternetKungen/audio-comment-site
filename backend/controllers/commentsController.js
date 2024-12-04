@@ -7,7 +7,7 @@ export const getCommentsByEpisode = async (req, res) => {
 
     const comments = await Comment.find({ episodeId }).populate(
       "userId",
-      "name"
+      "fistName lastName"
     );
     res.json(comments);
   } catch (error) {
