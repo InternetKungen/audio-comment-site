@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAudioContext } from "../../../AudioContext";
+import downloadIcon from "../../../assets/icons/download_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 import "./EpisodePage.scss";
 
 interface Episode {
@@ -40,6 +41,37 @@ const EpisodePage: React.FC = () => {
 
     fetchEpisode();
   }, [id]);
+
+  const downloadEpisode = async () => {
+    if (!episode) return;
+
+    try {
+      // Fetch the audio file
+      const response = await fetch(episode.audioFile);
+      const blob = await response.blob();
+
+      // Create a download link
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+
+      // Generate a filename with episode number and title
+      const filename = `Episode_${
+        episode.episodeNumber
+      }_${episode.title.replace(/[^a-z0-9]/gi, "_")}.mp3`;
+      downloadLink.download = filename;
+
+      // Trigger the download
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+
+      // Clean up
+      document.body.removeChild(downloadLink);
+      URL.revokeObjectURL(downloadLink.href);
+    } catch (error) {
+      console.error("Error downloading episode:", error);
+      alert("Failed to download the episode. Please try again.");
+    }
+  };
 
   if (loading) return <p>Loading episode...</p>;
   if (!episode) return <p>Episode not found.</p>;
@@ -96,6 +128,14 @@ const EpisodePage: React.FC = () => {
           {isCurrentPlaying
             ? String.fromCharCode(10074, 10074)
             : String.fromCharCode(9654)}
+        </button>
+        <button
+          type="button"
+          className="download-button"
+          onClick={downloadEpisode}
+          title="Download Episode"
+        >
+          <img src={downloadIcon} alt="Download" className="download-icon" />
         </button>
       </div>
       {/* <p>
