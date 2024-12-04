@@ -1,7 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./BackOffice.scss";
 
+interface Episode {
+  _id: string;
+  title: string;
+  episodeNumber: number;
+  description: string;
+  characters: string[];
+  players: string[];
+  gameMaster: string;
+  audioFile: string;
+  length: number;
+  poster: string;
+  dateOfRecording: string;
+}
+
 const BackOffice: React.FC = () => {
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [selectedEpisodeId, setSelectedEpisodeId] = useState<string | null>(
+    null
+  );
   const [title, setTitle] = useState("");
   const [episodeNumber, setEpisodeNumber] = useState(0);
   const [description, setDescription] = useState("");
@@ -11,9 +29,39 @@ const BackOffice: React.FC = () => {
   const [audioFile, setAudioFile] = useState("");
   const [length, setLength] = useState(0);
   const [poster, setPoster] = useState("");
-  const [rating, setRating] = useState(0);
+  const [dateOfRecording, setDateOfRecording] = useState("");
   const [feedback, setFeedback] = useState("");
 
+  // Hämta alla episoder
+  useEffect(() => {
+    const fetchEpisodes = async () => {
+      try {
+        const response = await fetch("/api/episode");
+        const data = await response.json();
+        setEpisodes(data);
+      } catch (error) {
+        setFeedback("Kunde inte hämta episoder.");
+      }
+    };
+    fetchEpisodes();
+  }, []);
+
+  // Fyll i formuläret vid val av episod
+  const handleSelectEpisode = (episode: Episode) => {
+    setSelectedEpisodeId(episode._id);
+    setTitle(episode.title);
+    setEpisodeNumber(episode.episodeNumber);
+    setDescription(episode.description);
+    setCharacters(episode.characters.join(", "));
+    setPlayers(episode.players.join(", "));
+    setGameMaster(episode.gameMaster);
+    setAudioFile(episode.audioFile);
+    setLength(episode.length);
+    setPoster(episode.poster);
+    setDateOfRecording(episode.dateOfRecording);
+  };
+
+  // Skapa en ny episod
   const handleCreateEpisode = async () => {
     try {
       const response = await fetch("/api/episode", {
@@ -21,7 +69,6 @@ const BackOffice: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Skicka cookies för autentisering
         body: JSON.stringify({
           title,
           episodeNumber,
@@ -32,136 +79,194 @@ const BackOffice: React.FC = () => {
           audioFile,
           length,
           poster,
-          rating,
+          dateOfRecording,
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Ett fel uppstod");
-      }
+      if (!response.ok) throw new Error("Ett fel uppstod vid skapandet.");
 
-      const data = await response.json();
-      setFeedback(`Episoden skapades: ${data.title}`);
-      // Rensa formuläret efter lyckad skapelse
-      setTitle("");
-      setEpisodeNumber(0);
-      setDescription("");
-      setCharacters("");
-      setPlayers("");
-      setGameMaster("");
-      setAudioFile("");
-      setLength(0);
-      setPoster("");
-      setRating(0);
+      const newEpisode = await response.json();
+      setEpisodes([...episodes, newEpisode]);
+      setFeedback(`Episoden skapades: ${newEpisode.title}`);
+      clearForm();
     } catch (error: any) {
-      setFeedback(
-        error.message || "Ett fel uppstod vid skapandet av episoden."
-      );
+      setFeedback(error.message || "Ett fel uppstod.");
     }
+  };
+
+  // Uppdatera en episod
+  const handleUpdateEpisode = async () => {
+    if (!selectedEpisodeId) return;
+
+    try {
+      const response = await fetch(`/api/episode/${selectedEpisodeId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          episodeNumber,
+          description,
+          characters: characters.split(",").map((c) => c.trim()),
+          players: players.split(",").map((p) => p.trim()),
+          gameMaster,
+          audioFile,
+          length,
+          poster,
+          dateOfRecording,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Ett fel uppstod vid uppdateringen.");
+
+      const updatedEpisode = await response.json();
+      setEpisodes(
+        episodes.map((ep) =>
+          ep._id === updatedEpisode._id ? updatedEpisode : ep
+        )
+      );
+      setFeedback(`Episoden uppdaterades: ${updatedEpisode.title}`);
+      clearForm();
+    } catch (error: any) {
+      setFeedback(error.message || "Ett fel uppstod.");
+    }
+  };
+
+  const clearForm = () => {
+    setSelectedEpisodeId(null);
+    setTitle("");
+    setEpisodeNumber(0);
+    setDescription("");
+    setCharacters("");
+    setPlayers("");
+    setGameMaster("");
+    setAudioFile("");
+    setLength(0);
+    setPoster("");
+    setDateOfRecording("");
   };
 
   return (
     <div className="back-office">
       <h1>Back Office</h1>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleCreateEpisode();
-        }}
-      >
-        <div>
-          <label htmlFor="title">Titel:</label>
-          <input
-            id="title"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+      <div className="back-office-inner">
+        <div className="episode-list">
+          <h2>Lista av episoder</h2>
+          <ul>
+            {episodes.map((ep) => (
+              <li key={ep._id} onClick={() => handleSelectEpisode(ep)}>
+                {ep.episodeNumber}: {ep.title}
+              </li>
+            ))}
+          </ul>
         </div>
-        <div>
-          <label htmlFor="episodeNumber">Avsnittsnummer:</label>
-          <input
-            id="episodeNumber"
-            type="number"
-            value={episodeNumber}
-            onChange={(e) => setEpisodeNumber(Number(e.target.value))}
-          />
+        <div className="episode-form">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              selectedEpisodeId ? handleUpdateEpisode() : handleCreateEpisode();
+            }}
+          >
+            <div>
+              <label htmlFor="title">Titel:</label>
+              <input
+                id="title"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="episodeNumber">Avsnittsnummer:</label>
+              <input
+                id="episodeNumber"
+                type="number"
+                value={episodeNumber}
+                onChange={(e) => setEpisodeNumber(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <label htmlFor="description">Beskrivning:</label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="characters">Karaktärer (kommaseparerade):</label>
+              <input
+                id="characters"
+                type="text"
+                value={characters}
+                onChange={(e) => setCharacters(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="players">Spelare (kommaseparerade):</label>
+              <input
+                id="players"
+                type="text"
+                value={players}
+                onChange={(e) => setPlayers(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="gameMaster">Spelledare:</label>
+              <input
+                id="gameMaster"
+                type="text"
+                value={gameMaster}
+                onChange={(e) => setGameMaster(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="audioFile">Ljudfil:</label>
+              <input
+                id="audioFile"
+                type="text"
+                value={audioFile}
+                onChange={(e) => setAudioFile(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="length">Längd (minuter):</label>
+              <input
+                id="length"
+                type="number"
+                value={length}
+                onChange={(e) => setLength(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <label htmlFor="poster">Poster:</label>
+              <input
+                id="poster"
+                type="text"
+                value={poster}
+                onChange={(e) => setPoster(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="dateOfRecording">Datum:</label>
+              <input
+                id="dateOfRecording"
+                type="date"
+                value={dateOfRecording}
+                onChange={(e) => setDateOfRecording(e.target.value)}
+              />
+            </div>
+            <button type="submit">
+              {selectedEpisodeId ? "Uppdatera Episod" : "Skapa Episod"}
+            </button>
+            <button type="button" onClick={clearForm}>
+              Rensa Formulär
+            </button>
+          </form>
+          {feedback && <p className="feedback">{feedback}</p>}
         </div>
-        <div>
-          <label htmlFor="description">Beskrivning:</label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="characters">Karaktärer (kommaseparerade):</label>
-          <input
-            id="characters"
-            type="text"
-            value={characters}
-            onChange={(e) => setCharacters(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="players">Spelare (kommaseparerade):</label>
-          <input
-            id="players"
-            type="text"
-            value={players}
-            onChange={(e) => setPlayers(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="gameMaster">Spelledare:</label>
-          <input
-            id="gameMaster"
-            type="text"
-            value={gameMaster}
-            onChange={(e) => setGameMaster(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="audioFile">Ljudfil:</label>
-          <input
-            id="audioFile"
-            type="text"
-            value={audioFile}
-            onChange={(e) => setAudioFile(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="length">Längd (minuter):</label>
-          <input
-            id="length"
-            type="number"
-            value={length}
-            onChange={(e) => setLength(Number(e.target.value))}
-          />
-        </div>
-        <div>
-          <label htmlFor="poster">Poster:</label>
-          <input
-            id="poster"
-            type="text"
-            value={poster}
-            onChange={(e) => setPoster(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="rating">Betyg:</label>
-          <input
-            id="rating"
-            type="number"
-            value={rating}
-            onChange={(e) => setRating(Number(e.target.value))}
-          />
-        </div>
-        <button type="submit">Skapa Episod</button>
-      </form>
-      {feedback && <p className="feedback">{feedback}</p>}
+      </div>
     </div>
   );
 };
