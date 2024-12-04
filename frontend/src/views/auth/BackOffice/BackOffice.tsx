@@ -64,7 +64,8 @@ const BackOffice: React.FC = () => {
     setAudioFile(episode.audioFile);
     setLength(episode.length);
     setPoster(episode.poster);
-    setDateOfRecording(episode.dateOfRecording);
+    const formattedDate = episode.dateOfRecording.split("T")[0];
+    setDateOfRecording(formattedDate);
   };
 
   // Utility function to get audio file length
@@ -160,42 +161,6 @@ const BackOffice: React.FC = () => {
       return data.path;
     } catch (error) {
       setFeedback("Uppladdning av poster misslyckades");
-      return null;
-    }
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setAudioFile(file.name);
-    }
-  };
-
-  // New method to upload file
-  const uploadFile = async () => {
-    if (!selectedFile) {
-      setFeedback("Ingen fil vald");
-      return null;
-    }
-
-    const formData = new FormData();
-    formData.append("audioFile", selectedFile);
-
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Kunde inte ladda upp filen");
-      }
-
-      const data = await response.json();
-      return data.path; // Return the path to use in audioFile
-    } catch (error) {
-      setFeedback("Uppladdning misslyckades");
       return null;
     }
   };
@@ -388,15 +353,6 @@ const BackOffice: React.FC = () => {
                 <p>Vald ljudfil: {selectedAudioFile.name}</p>
               )}
             </div>
-            {/* <div>
-              <label htmlFor="length">Längd (minuter):</label>
-              <input
-                id="length"
-                type="number"
-                value={length}
-                onChange={(e) => setLength(Number(e.target.value))}
-              />
-            </div> */}
             <div>
               <label htmlFor="posterFile">Poster:</label>
               <input
