@@ -10,6 +10,7 @@ interface Episode {
   description: string;
   poster: string;
   audioFile: string;
+  dateOfRecording: string;
 }
 
 const EpisodeLister: React.FC = () => {
@@ -39,7 +40,7 @@ const EpisodeLister: React.FC = () => {
 
   return (
     <div className="episode-lister">
-      <h1>Episodes</h1>
+      {/* <h1>Episodes</h1> */}
       <ul>
         {episodes.map((episode) => {
           const isCurrentPlaying =
@@ -54,6 +55,9 @@ const EpisodeLister: React.FC = () => {
                       #{episode.episodeNumber} - {episode.title}
                     </h2>
                     <p className="episode-description">{episode.description}</p>
+                    <p className="episode-date">
+                      {new Date(episode.dateOfRecording).toLocaleDateString()}
+                    </p>
                   </div>
                   <div className="episode-poster">
                     <img

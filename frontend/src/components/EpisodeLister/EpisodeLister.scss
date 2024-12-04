@@ -5,6 +5,7 @@
   flex-direction: column;
   align-items: center;
   transform-style: preserve-3d;
+  margin-bottom: 100px;
 
   h1 {
     color: $color-text-white;
@@ -73,8 +74,19 @@
             margin-bottom: 5px;
           }
           .episode-description {
+            box-sizing: border-box;
             font-size: 1rem;
             margin-bottom: 5px;
+            margin-right: 20px;
+            padding: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            max-width: 500px;
+            height: 40px;
           }
         }
       }

@@ -9,6 +9,7 @@ import userRouter from "./routes/user.js";
 import commentsRouter from "./routes/comments.js";
 import http from "http";
 import path from "path";
+import uploadRouter from "./routes/upload.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/episode", episodeRouter);
 app.use("/api/user", userRouter);
 app.use("/api/comments", commentsRouter);
+app.use("/api/upload", uploadRouter);
 
 // Servera statiska filer från dist-mappen
 const distPath = path.resolve("..", "frontend", "dist");

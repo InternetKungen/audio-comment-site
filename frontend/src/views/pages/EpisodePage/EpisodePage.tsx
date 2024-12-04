@@ -79,13 +79,23 @@ const EpisodePage: React.FC = () => {
         <button
           type="button"
           className="play-button"
-          onClick={() =>
-            currentAudioFile === episode.audioFile
-              ? togglePlayPause()
-              : setAudioFile(episode.audioFile)
-          }
+          onClick={() => {
+            // event.preventDefault();
+            // event.stopPropagation();
+
+            if (currentAudioFile === episode.audioFile) {
+              // Om det redan är samma fil, toggla play/pause
+              togglePlayPause();
+            } else {
+              // Om det är en ny fil, sätt filen och starta uppspelningen
+              setAudioFile(episode.audioFile);
+              setTimeout(() => togglePlayPause(), 0); // Säkerställer att togglePlayPause körs efter setAudioFile
+            }
+          }}
         >
-          {isCurrentPlaying ? "⏸" : "▶"}
+          {isCurrentPlaying
+            ? String.fromCharCode(10074, 10074)
+            : String.fromCharCode(9654)}
         </button>
       </div>
       {/* <p>

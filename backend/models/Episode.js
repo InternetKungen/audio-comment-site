@@ -44,11 +44,9 @@ const episodeSchema = new mongoose.Schema(
       required: true,
       default: "",
     },
-    rating: {
-      type: Number,
+    dateOfRecording: {
+      type: Date,
       required: true,
-      min: 1,
-      max: 5, // Om det är ett 5-stjärnigt system
     },
   },
   { timestamps: true }
