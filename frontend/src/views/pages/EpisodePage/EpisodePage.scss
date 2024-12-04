@@ -42,12 +42,22 @@
     max-width: 500px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background: $bg-gradient-movie-button;
+    background: linear-gradient(
+      to bottom,
+      $color-secondary,
+      $color-secondary-dark
+    );
     height: 200px;
     width: 160px;
     right: 10px;
     top: 10px;
     position: absolute;
+    padding: 4px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
   p {
     width: 100%;

@@ -1,11 +1,13 @@
 .header {
   width: 100%;
-  background: $color-primary-dark;
+  background: transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
   height: $header-height;
+  position: fixed;
+  z-index: 1000;
 
   &__content {
     display: flex;

@@ -40,7 +40,7 @@ const EpisodeLister: React.FC = () => {
 
   return (
     <div className="episode-lister">
-      <h1>Episodes</h1>
+      {/* <h1>Episodes</h1> */}
       <ul>
         {episodes.map((episode) => {
           const isCurrentPlaying =

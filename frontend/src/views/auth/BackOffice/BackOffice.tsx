@@ -32,6 +32,12 @@ const BackOffice: React.FC = () => {
   const [dateOfRecording, setDateOfRecording] = useState("");
   const [feedback, setFeedback] = useState("");
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedAudioFile, setSelectedAudioFile] = useState<File | null>(null);
+  const [selectedPosterFile, setSelectedPosterFile] = useState<File | null>(
+    null
+  );
+
   // Hämta alla episoder
   useEffect(() => {
     const fetchEpisodes = async () => {
@@ -61,9 +67,150 @@ const BackOffice: React.FC = () => {
     setDateOfRecording(episode.dateOfRecording);
   };
 
+  // Utility function to get audio file length
+  const getAudioLength = (file: File): Promise<number> => {
+    return new Promise((resolve, reject) => {
+      const audio = new Audio(URL.createObjectURL(file));
+
+      audio.addEventListener("loadedmetadata", () => {
+        // Convert seconds to minutes and round to nearest integer
+        const lengthInMinutes = Math.round(audio.duration / 60);
+        resolve(lengthInMinutes);
+      });
+
+      audio.addEventListener("error", (e) => {
+        console.error("Error loading audio", e);
+        reject(new Error("Kunde inte läsa av ljudfilens längd"));
+      });
+    });
+  };
+
+  const handleAudioFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedAudioFile(file);
+      setAudioFile(file.name);
+
+      // Automatically set length when audio is selected
+      getAudioLength(file)
+        .then((audioLength) => {
+          setLength(audioLength);
+        })
+        .catch((error) => {
+          setFeedback(error.message);
+        });
+    }
+  };
+
+  const handlePosterFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedPosterFile(file);
+      setPoster(file.name);
+    }
+  };
+
+  const uploadAudioFile = async () => {
+    if (!selectedAudioFile) {
+      setFeedback("Ingen ljudfil vald");
+      return null;
+    }
+
+    const formData = new FormData();
+    formData.append("audioFile", selectedAudioFile);
+
+    try {
+      const response = await fetch("/api/upload/audio", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Kunde inte ladda upp ljudfilen");
+      }
+
+      const data = await response.json();
+      return data.path;
+    } catch (error) {
+      setFeedback("Uppladdning av ljudfil misslyckades");
+      return null;
+    }
+  };
+
+  // Upload poster file
+  const uploadPosterFile = async () => {
+    if (!selectedPosterFile) {
+      return null;
+    }
+
+    const formData = new FormData();
+    formData.append("posterFile", selectedPosterFile);
+
+    try {
+      const response = await fetch("/api/upload/poster", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Kunde inte ladda upp postern");
+      }
+
+      const data = await response.json();
+      return data.path;
+    } catch (error) {
+      setFeedback("Uppladdning av poster misslyckades");
+      return null;
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setAudioFile(file.name);
+    }
+  };
+
+  // New method to upload file
+  const uploadFile = async () => {
+    if (!selectedFile) {
+      setFeedback("Ingen fil vald");
+      return null;
+    }
+
+    const formData = new FormData();
+    formData.append("audioFile", selectedFile);
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Kunde inte ladda upp filen");
+      }
+
+      const data = await response.json();
+      return data.path; // Return the path to use in audioFile
+    } catch (error) {
+      setFeedback("Uppladdning misslyckades");
+      return null;
+    }
+  };
+
   // Skapa en ny episod
   const handleCreateEpisode = async () => {
     try {
+      // Upload files first if selected
+      const uploadedAudioPath = selectedAudioFile
+        ? await uploadAudioFile()
+        : null;
+      const uploadedPosterPath = selectedPosterFile
+        ? await uploadPosterFile()
+        : null;
+
       const response = await fetch("/api/episode", {
         method: "POST",
         headers: {
@@ -76,9 +223,9 @@ const BackOffice: React.FC = () => {
           characters: characters.split(",").map((c) => c.trim()),
           players: players.split(",").map((p) => p.trim()),
           gameMaster,
-          audioFile,
+          audioFile: uploadedAudioPath || audioFile,
           length,
-          poster,
+          poster: uploadedPosterPath || poster,
           dateOfRecording,
         }),
       });
@@ -99,6 +246,14 @@ const BackOffice: React.FC = () => {
     if (!selectedEpisodeId) return;
 
     try {
+      // Upload files first if selected
+      const uploadedAudioPath = selectedAudioFile
+        ? await uploadAudioFile()
+        : null;
+      const uploadedPosterPath = selectedPosterFile
+        ? await uploadPosterFile()
+        : null;
+
       const response = await fetch(`/api/episode/${selectedEpisodeId}`, {
         method: "PUT",
         headers: {
@@ -111,9 +266,9 @@ const BackOffice: React.FC = () => {
           characters: characters.split(",").map((c) => c.trim()),
           players: players.split(",").map((p) => p.trim()),
           gameMaster,
-          audioFile,
+          audioFile: uploadedAudioPath || audioFile,
           length,
-          poster,
+          poster: uploadedPosterPath || poster,
           dateOfRecording,
         }),
       });
@@ -225,12 +380,15 @@ const BackOffice: React.FC = () => {
               <label htmlFor="audioFile">Ljudfil:</label>
               <input
                 id="audioFile"
-                type="text"
-                value={audioFile}
-                onChange={(e) => setAudioFile(e.target.value)}
+                type="file"
+                accept="audio/*"
+                onChange={handleAudioFileSelect}
               />
+              {selectedAudioFile && (
+                <p>Vald ljudfil: {selectedAudioFile.name}</p>
+              )}
             </div>
-            <div>
+            {/* <div>
               <label htmlFor="length">Längd (minuter):</label>
               <input
                 id="length"
@@ -238,15 +396,18 @@ const BackOffice: React.FC = () => {
                 value={length}
                 onChange={(e) => setLength(Number(e.target.value))}
               />
-            </div>
+            </div> */}
             <div>
-              <label htmlFor="poster">Poster:</label>
+              <label htmlFor="posterFile">Poster:</label>
               <input
-                id="poster"
-                type="text"
-                value={poster}
-                onChange={(e) => setPoster(e.target.value)}
+                id="posterFile"
+                type="file"
+                accept="image/*"
+                onChange={handlePosterFileSelect}
               />
+              {selectedPosterFile && (
+                <p>Vald poster: {selectedPosterFile.name}</p>
+              )}
             </div>
             <div>
               <label htmlFor="dateOfRecording">Datum:</label>
