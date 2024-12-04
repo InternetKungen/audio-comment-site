@@ -1,6 +1,6 @@
 .header {
   width: 100%;
-  background: transparent;
+  background: linear-gradient(to bottom, $color-primary-dark, transparent);
   display: flex;
   justify-content: space-between;
   align-items: center;
