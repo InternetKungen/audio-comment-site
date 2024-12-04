@@ -45,6 +45,27 @@
         transform-origin: center top;
 
         transition: transform 0.1s ease-in-out;
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            to right,
+            $color-secondary,
+            $color-secondary-light,
+            $color-secondary
+          );
+
+          opacity: 0.2;
+          z-index: -1;
+          transition: opacity 0.3s ease-in-out;
+          &:hover {
+            opacity: 1;
+          }
+        }
         &:hover {
           transform: scale(1.01);
           border: 3px solid $color-secondary-light;
@@ -72,6 +93,10 @@
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 5px;
+            font-family: "MedievalSharp", serif;
+            &::first-letter {
+              font-family: "Caudex", serif;
+            }
           }
           .episode-description {
             box-sizing: border-box;

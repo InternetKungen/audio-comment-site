@@ -31,6 +31,7 @@ const LoginModal: React.FC<Props> = ({
     setLastName("");
 
     if (show) {
+      setModalType("login");
       document.body.classList.add("modal-open");
     } else {
       document.body.classList.remove("modal-open");
@@ -38,7 +39,7 @@ const LoginModal: React.FC<Props> = ({
     return () => {
       document.body.classList.remove("modal-open");
     };
-  }, [show, type]);
+  }, [show]);
 
   if (!show) {
     return null;
@@ -121,7 +122,7 @@ const LoginModal: React.FC<Props> = ({
       });
   };
   return (
-    <div className="login-modal-background position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center">
+    <div className="login-modal-background">
       {type === "login" && (
         <section className="login-modal-content">
           <span className="close-button" onClick={handleClose}>
