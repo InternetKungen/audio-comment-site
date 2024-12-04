@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAudioContext } from "../../../AudioContext";
 import downloadIcon from "../../../assets/icons/download_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
+import CommentSection from "../../../components/CommentSection/CommentSection";
 import "./EpisodePage.scss";
 
 interface Episode {
@@ -93,7 +94,6 @@ const EpisodePage: React.FC = () => {
         />
       </div>
       <div className="episode-info">
-        <p>{episode.description}</p>
         <p>
           <strong>Length:</strong> {episode.length} minutes
         </p>
@@ -106,6 +106,9 @@ const EpisodePage: React.FC = () => {
         <p>
           <strong>Players:</strong> {episode.players.join(", ")}
         </p>
+      </div>
+      <div className="episode-description">
+        <p>{episode.description}</p>
       </div>
       <div className="episode-audio">
         <button
@@ -141,6 +144,7 @@ const EpisodePage: React.FC = () => {
       {/* <p>
         <strong>Rating:</strong> {episode.rating}/5
       </p> */}
+      {episode && <CommentSection episodeId={episode._id} />}
     </div>
   );
 };

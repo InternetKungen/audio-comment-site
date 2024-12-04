@@ -10,6 +10,7 @@ import {
 import { useCookies } from "react-cookie";
 
 interface User {
+  _id: string;
   email: string;
   firstName: string;
   lastName: string;
