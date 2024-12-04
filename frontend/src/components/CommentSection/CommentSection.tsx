@@ -79,43 +79,30 @@ const CommentSection: React.FC<CommentSectionProps> = ({ episodeId }) => {
     }
   };
 
-  if (!user) {
-    return (
-      <div className="comment-section">
-        <div className="comment-header">
-          <h2>Comments</h2>
-        </div>
-        <div className="comment-content">
-          <p className="login-prompt">
-            Please log in to view and post comments.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="comment-section">
       <div className="comment-header">
         <h2>Comments ({comments.length})</h2>
       </div>
       <div className="comment-content">
-        {/* Comment Input */}
-        <div className="comment-input-container">
-          <textarea
-            placeholder="Write a comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            className="comment-textarea"
-          />
-          <button
-            className="comment-submit-btn"
-            onClick={handleSubmitComment}
-            disabled={!newComment.trim()}
-          >
-            Post Comment
-          </button>
-        </div>
+        {/* Comment Input - Only show if logged in */}
+        {user && (
+          <div className="comment-input-container">
+            <textarea
+              placeholder="Write a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="comment-textarea"
+            />
+            <button
+              className="comment-submit-btn"
+              onClick={handleSubmitComment}
+              disabled={!newComment.trim()}
+            >
+              Post Comment
+            </button>
+          </div>
+        )}
 
         {/* Comments List */}
         <div className="comments-list">
@@ -128,15 +115,16 @@ const CommentSection: React.FC<CommentSectionProps> = ({ episodeId }) => {
                   <div className="comment-user">
                     {comment.userId.firstName} {comment.userId.lastName}
                   </div>
-                  {(user.role === "admin" ||
-                    user._id === comment.userId._id) && (
-                    <button
-                      className="comment-delete-btn"
-                      onClick={() => handleDeleteComment(comment._id)}
-                    >
-                      Delete
-                    </button>
-                  )}
+                  {user &&
+                    (user.role === "admin" ||
+                      user._id === comment.userId._id) && (
+                      <button
+                        className="comment-delete-btn"
+                        onClick={() => handleDeleteComment(comment._id)}
+                      >
+                        Delete
+                      </button>
+                    )}
                 </div>
                 <div className="comment-text">{comment.text}</div>
                 <div className="comment-timestamp">
