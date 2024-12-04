@@ -32,7 +32,6 @@ const BackOffice: React.FC = () => {
   const [dateOfRecording, setDateOfRecording] = useState("");
   const [feedback, setFeedback] = useState("");
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedAudioFile, setSelectedAudioFile] = useState<File | null>(null);
   const [selectedPosterFile, setSelectedPosterFile] = useState<File | null>(
     null

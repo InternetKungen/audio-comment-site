@@ -60,7 +60,7 @@ const audioUpload = multer({
       cb(new Error("Endast ljudfiler är tillåtna"), false);
     }
   },
-  limits: { fileSize: 500 * 1024 * 1024 }, // 500 MB max file size
+  limits: { fileSize: 1000 * 1024 * 1024 }, // 1000 MB max file size
 });
 
 // Poster image upload

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./EpisodeLister.scss";
 import { useAudioContext } from "../../AudioContext";
+import recentIcon from "../../assets/icons/schedule_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
+import episodeNumberIcon from "../../assets/icons/tag_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
+import sortIcon from "../../assets/icons/sort_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 
 interface Episode {
   _id: string;
@@ -16,6 +19,9 @@ interface Episode {
 const EpisodeLister: React.FC = () => {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [sortOption, setSortOption] = useState<"episodeAsc" | "recent">(
+    "episodeAsc"
+  );
   const { currentAudioFile, isPlaying, setAudioFile, togglePlayPause } =
     useAudioContext();
 
@@ -36,13 +42,56 @@ const EpisodeLister: React.FC = () => {
     fetchEpisodes();
   }, []);
 
+  const sortEpisodes = (episodeList: Episode[]) => {
+    switch (sortOption) {
+      case "episodeAsc":
+        return [...episodeList].sort(
+          (a, b) => a.episodeNumber - b.episodeNumber
+        );
+      case "recent":
+      default:
+        return [...episodeList].sort(
+          (a, b) =>
+            new Date(b.dateOfRecording).getTime() -
+            new Date(a.dateOfRecording).getTime()
+        );
+    }
+  };
+
+  const sortedEpisodes = sortEpisodes(episodes);
+
   if (loading) return <p>Loading episodes...</p>;
 
   return (
     <div className="episode-lister">
       {/* <h1>Episodes</h1> */}
+      <div className="sorting-controls">
+        <label htmlFor="sort-select">
+          <img src={sortIcon} alt="Sort Icon" />
+        </label>
+        <select
+          id="sort-select"
+          value={sortOption}
+          onChange={(e) =>
+            setSortOption(e.target.value as "episodeAsc" | "recent")
+          }
+        >
+          <option value="recent">
+            🕔
+            <span className="recent-icon">
+              <img src={recentIcon} alt="Recent Icon" />
+            </span>
+          </option>
+          <option value="episodeAsc">
+            #
+            <span className="episode-number-icon">
+              <img src={episodeNumberIcon} alt="Episode Number Icon" />
+            </span>
+          </option>
+        </select>
+      </div>
       <ul>
-        {episodes.map((episode) => {
+        {sortedEpisodes.map((episode) => {
           const isCurrentPlaying =
             currentAudioFile === episode.audioFile && isPlaying;
 
