@@ -11,7 +11,9 @@
   border: 3px solid $color-secondary;
   border-radius: 5px;
   position: relative;
-  min-height: 225px;
+  // min-height: 100vh; // Change from fixed height to full viewport height
+  margin-bottom: 90px; // Add some bottom padding for scroll
+  overflow-y: auto;
   &:after {
     content: "";
     position: absolute;
