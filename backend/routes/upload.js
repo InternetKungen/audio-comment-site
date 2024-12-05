@@ -1,4 +1,3 @@
-// /backend/routes/upload.js
 import express from "express";
 import multer from "multer";
 import path from "path";
@@ -10,7 +9,8 @@ const router = express.Router();
 const createStorage = (uploadDir) =>
   multer.diskStorage({
     destination: (req, file, cb) => {
-      const fullUploadDir = path.resolve("..", "frontend", "public", uploadDir);
+      // Define the uploads directory within the backend public folder
+      const fullUploadDir = path.resolve("public", uploadDir);
 
       // Create uploads directory if it doesn't exist
       if (!fs.existsSync(fullUploadDir)) {
@@ -20,7 +20,7 @@ const createStorage = (uploadDir) =>
       cb(null, fullUploadDir);
     },
     filename: (req, file, cb) => {
-      // Generate unique filename
+      // Generate a unique filename based on timestamp and random number
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
       cb(
         null,
@@ -46,7 +46,6 @@ const audioUpload = multer({
       "video/mp4",
       "audio/x-m4a",
     ];
-
     const allowedExtensions = [".m4a", ".mp4", ".mp3", ".wav", ".ogg", ".flac"];
 
     const isAllowedMimeType = allowedTypes.includes(file.mimetype);
@@ -86,7 +85,7 @@ router.post("/audio", audioUpload.single("audioFile"), (req, res) => {
 
   res.json({
     filename: req.file.filename,
-    path: `/uploads/audio/${req.file.filename}`,
+    path: `/public/uploads/audio/${req.file.filename}`,
   });
 });
 
@@ -98,7 +97,7 @@ router.post("/poster", posterUpload.single("posterFile"), (req, res) => {
 
   res.json({
     filename: req.file.filename,
-    path: `/uploads/posters/${req.file.filename}`,
+    path: `/public/uploads/posters/${req.file.filename}`,
   });
 });
 

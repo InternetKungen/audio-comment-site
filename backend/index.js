@@ -19,6 +19,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.json());
 
+app.use("/public", express.static(path.resolve("public")));
+
 app.use("/api/auth", authRouter);
 app.use("/api/episode", episodeRouter);
 app.use("/api/user", userRouter);
@@ -34,7 +36,7 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
 
-// Skapa HTTP-server och Socket.io-server
+// Skapa HTTP-server
 const server = http.createServer(app);
 
 // Starta servern
