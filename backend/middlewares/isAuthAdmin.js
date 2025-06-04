@@ -21,7 +21,7 @@ export const isAuthAdmin = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: User not found" });
     }
-    if (!user.role === "admin") {
+    if (user.role !== "admin") {
       return res
         .status(401)
         .json({ error: "Unauthorized: User is not an admin" });

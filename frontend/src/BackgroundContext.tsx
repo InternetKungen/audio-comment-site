@@ -25,13 +25,13 @@ export const BackgroundProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // Effect to apply background styles
-  useEffect(() => {
-    if (backgroundImage) {
-      document.body.style.backgroundImage = `url(${backgroundImage})`;
-    } else {
-      document.body.style.backgroundImage = "";
-    }
-  }, [backgroundImage]);
+  // useEffect(() => {
+  //   if (backgroundImage) {
+  //     document.body.style.backgroundImage = `url(${backgroundImage})`;
+  //   } else {
+  //     document.body.style.backgroundImage = "";
+  //   }
+  // }, [backgroundImage]);
 
   const backgroundContextValue = useMemo(
     () => ({

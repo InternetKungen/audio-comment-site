@@ -6,6 +6,7 @@ import Header from "./layout/Header/Header";
 import Footer from "./layout/Footer/Footer";
 import { AudioProvider } from "./AudioContext";
 import { BackgroundProvider } from "./BackgroundContext";
+import BackgroundImage from "./components/BackgroundImage/BackgroundImage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <div className="app">
         <Router>
           <BackgroundProvider>
+            <BackgroundImage />
             <Header />
             <Main />
             <Footer />
