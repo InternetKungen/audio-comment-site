@@ -5,18 +5,23 @@ import Main from "./layout/Main/Main";
 import Header from "./layout/Header/Header";
 import Footer from "./layout/Footer/Footer";
 import { AudioProvider } from "./AudioContext";
+import { BackgroundProvider } from "./BackgroundContext";
+import BackgroundImage from "./components/BackgroundImage/BackgroundImage";
 
 function App() {
   return (
-    <AudioProvider>
-      <div className="app">
-        <Router>
-          <Header />
-          <Main />
-          <Footer />
-        </Router>
-      </div>
-    </AudioProvider>
+    <BackgroundProvider>
+      <AudioProvider>
+        <div className="app">
+          <Router>
+            <BackgroundImage />
+            <Header />
+            <Main />
+            <Footer />
+          </Router>
+        </div>
+      </AudioProvider>
+    </BackgroundProvider>
   );
 }
 

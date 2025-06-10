@@ -8,6 +8,10 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-y: scroll; /* Tvinga scrollbar även när den inte behövs - fix för att bilden inte ska hoppa */
+}
+
 body {
   font-family: "Roboto", sans-serif;
   overflow-x: hidden;

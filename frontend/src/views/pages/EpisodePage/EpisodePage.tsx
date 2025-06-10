@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAudioContext } from "../../../AudioContext";
+// import { useBackgroundContext } from "../../../BackgroundContext";
 import downloadIcon from "../../../assets/icons/download_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 import CommentSection from "../../../components/CommentSection/CommentSection";
 import "./EpisodePage.scss";
@@ -25,6 +26,7 @@ const EpisodePage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const { currentAudioFile, isPlaying, setAudioFile, togglePlayPause } =
     useAudioContext();
+  // const { setBackgroundImage } = useBackgroundContext();
 
   useEffect(() => {
     const fetchEpisode = async () => {
@@ -42,6 +44,12 @@ const EpisodePage: React.FC = () => {
 
     fetchEpisode();
   }, [id]);
+
+  // useEffect(() => {
+  //   if (episode) {
+  //     setBackgroundImage(episode.poster);
+  //   }
+  // }, [episode, setBackgroundImage]);
 
   const downloadEpisode = async () => {
     if (!episode) return;
@@ -123,6 +131,7 @@ const EpisodePage: React.FC = () => {
               setAudioFile(episode.audioFile, {
                 episodeNumber: episode.episodeNumber,
                 title: episode.title,
+                poster: episode.poster,
               });
               setTimeout(() => togglePlayPause(), 0); // Säkerställer att togglePlayPause körs efter setAudioFile
             }

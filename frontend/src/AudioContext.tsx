@@ -4,11 +4,14 @@ import React, {
   useState,
   useRef,
   useMemo,
+  useEffect,
 } from "react";
+import { useBackgroundContext } from "./BackgroundContext";
 
 interface Episode {
   episodeNumber: number;
   title: string;
+  poster: string;
 }
 
 interface AudioContextType {
@@ -33,7 +36,13 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1); // Standardvolym 100%
   const audioRef = useRef<HTMLAudioElement>(new Audio());
+  const { setBackgroundImage } = useBackgroundContext();
 
+  useEffect(() => {
+    if (currentEpisode) {
+      setBackgroundImage(currentEpisode.poster);
+    }
+  }, [currentEpisode, setBackgroundImage]);
   const setAudioFile = (file: string, episode: Episode) => {
     if (currentAudioFile !== file) {
       if (audioRef.current) {
