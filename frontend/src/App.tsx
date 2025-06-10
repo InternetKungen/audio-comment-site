@@ -10,18 +10,18 @@ import BackgroundImage from "./components/BackgroundImage/BackgroundImage";
 
 function App() {
   return (
-    <AudioProvider>
-      <div className="app">
-        <Router>
-          <BackgroundProvider>
+    <BackgroundProvider>
+      <AudioProvider>
+        <div className="app">
+          <Router>
             <BackgroundImage />
             <Header />
             <Main />
             <Footer />
-          </BackgroundProvider>
-        </Router>
-      </div>
-    </AudioProvider>
+          </Router>
+        </div>
+      </AudioProvider>
+    </BackgroundProvider>
   );
 }
 

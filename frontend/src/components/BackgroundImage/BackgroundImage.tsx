@@ -4,24 +4,39 @@ import "./BackgroundImage.scss";
 
 const BackgroundImage: React.FC = () => {
   const { backgroundImage } = useBackgroundContext();
-  const [visibleImage, setVisibleImage] = useState<string | null>(null);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [prevImage, setPrevImage] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    if (backgroundImage !== visibleImage) {
+    if (backgroundImage && backgroundImage !== currentImage) {
+      setPrevImage(currentImage); // sparar nuvarande som "uttonande"
+      setCurrentImage(backgroundImage); // ny bild blir "intonande"
+      setIsTransitioning(true);
+
       const timeout = setTimeout(() => {
-        setVisibleImage(backgroundImage);
-      }, 300); // matchar CSS fade-out
+        setPrevImage(null); // rensa efter fade
+        setIsTransitioning(false);
+      }, 600); // matchar CSS-tiden
+
       return () => clearTimeout(timeout);
     }
   }, [backgroundImage]);
 
   return (
     <div className="background-wrapper">
-      {visibleImage && (
+      <div className="background-left-edge" />
+      <div className="background-right-edge" />
+      {prevImage && isTransitioning && (
         <div
-          key={visibleImage} // tvingar omrendering för animation
-          className="background-fade"
-          style={{ backgroundImage: `url(${visibleImage})` }}
+          className="background-image fade-out"
+          style={{ backgroundImage: `url(${prevImage})` }}
+        />
+      )}
+      {currentImage && (
+        <div
+          className={`background-image ${isTransitioning ? "fade-in" : ""}`}
+          style={{ backgroundImage: `url(${currentImage})` }}
         />
       )}
     </div>

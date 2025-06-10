@@ -130,6 +130,7 @@ const EpisodeLister: React.FC = () => {
                         setAudioFile(episode.audioFile, {
                           episodeNumber: episode.episodeNumber,
                           title: episode.title,
+                          poster: episode.poster,
                         });
                         setTimeout(() => togglePlayPause(), 0); // Säkerställer att togglePlayPause körs efter setAudioFile
                       }
