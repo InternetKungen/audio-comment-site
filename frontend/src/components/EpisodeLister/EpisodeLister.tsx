@@ -109,11 +109,7 @@ const EpisodeLister: React.FC = () => {
                     </p>
                   </div>
                   <div className="episode-poster">
-                    <img
-                      src={episode.poster}
-                      alt={`${episode.title} Poster`}
-                      width="200"
-                    />
+                    <img src={episode.poster} alt={`${episode.title} Poster`} />
                   </div>
                   <button
                     type="button"
