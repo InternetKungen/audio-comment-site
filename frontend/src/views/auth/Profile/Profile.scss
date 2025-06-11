@@ -10,35 +10,86 @@
     margin-bottom: 20px;
   }
 
-  .profile-card {
+  .profile-card,
+  .password-update {
     max-width: 100vw;
     width: 400px;
     margin: 0 auto;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 3px solid $color-secondary;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background: linear-gradient(
+      to bottom,
+      $color-secondary-dark,
+      $color-secondary-light
+    );
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 
-    .profile-field {
+    h2 {
+      font-size: 1.5rem;
+      color: $color-secondary-light;
+      margin-bottom: 10px;
+      // font-family: "MedievalSharp", serif;
+      @include text-stroke($color-primary-dark);
+      text-align: center;
+    }
+
+    .profile-field,
+    .password-field {
       display: flex;
+      align-items: center;
+      gap: 10px;
       justify-content: space-between;
       padding: 10px 0;
       border-bottom: 1px solid #eee;
 
       label {
+        width: 35%;
+
         font-weight: bold;
-        color: #555;
+        color: #eee;
+        @include text-stroke($color-primary-dark);
       }
 
       span {
-        color: #777;
+        color: #585858;
       }
 
       &:last-child {
         border-bottom: none;
       }
     }
+  }
+
+  .password-field {
+    border-bottom: none !important;
+  }
+
+  .update-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: $color-secondary;
+    color: $color-primary-dark;
+    font-size: 1.25rem;
+    border: 2px solid $color-secondary-dark;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: $color-secondary-light;
+    }
+  }
+
+  .password-update {
+    background: linear-gradient(
+      to top,
+      $color-secondary-dark,
+      $color-secondary-light
+    );
   }
 }
 
