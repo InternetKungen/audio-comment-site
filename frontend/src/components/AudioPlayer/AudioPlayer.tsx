@@ -5,6 +5,7 @@ import "./AudioPlayer.scss";
 interface Episode {
   episodeNumber: number;
   title: string;
+  poster: string;
 }
 
 interface AudioPlayerProps {
