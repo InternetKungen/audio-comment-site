@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { UserContext } from "../../../UserContext";
 import { Link } from "react-router-dom";
 import Popup from "../../../components/Popup/Popup";
