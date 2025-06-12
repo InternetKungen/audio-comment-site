@@ -3,7 +3,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const router = express.Router();
+const uploadRouter = express.Router();
 
 // Configure storage for multer
 const createStorage = (uploadDir) =>
@@ -78,11 +78,12 @@ const posterUpload = multer({
 });
 
 // Audio file upload route
-router.post("/audio", audioUpload.single("audioFile"), (req, res) => {
+uploadRouter.post("/audio", audioUpload.single("audioFile"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "Ingen fil har laddats upp" });
   }
 
+  // If you want to return the full path to the uploaded file, you can use:
   // res.json({
   //   filename: req.file.filename,
   //   path: `/public/uploads/audio/${req.file.filename}`,
@@ -95,7 +96,7 @@ router.post("/audio", audioUpload.single("audioFile"), (req, res) => {
 });
 
 // Poster upload route
-router.post("/poster", posterUpload.single("posterFile"), (req, res) => {
+uploadRouter.post("/poster", posterUpload.single("posterFile"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "Ingen poster har laddats upp" });
   }
@@ -106,4 +107,4 @@ router.post("/poster", posterUpload.single("posterFile"), (req, res) => {
   });
 });
 
-export default router;
+export default uploadRouter;

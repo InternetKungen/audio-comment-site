@@ -6,18 +6,18 @@ import {
   userRegister,
 } from "../controllers/authController.js";
 
-const router = express.Router();
+const authRouter = express.Router();
 
 // register a new user
-router.post("/register", userRegister);
+authRouter.post("/register", userRegister);
 
 // login a user
-router.post("/login", userLogin);
+authRouter.post("/login", userLogin);
 
 // logout a user
-router.post("/logout", userLogout);
+authRouter.post("/logout", userLogout);
 
 // reset password
-router.post("/reset-password", resetPassword);
+authRouter.post("/reset-password", resetPassword);
 
-export default router;
+export default authRouter;

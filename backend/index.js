@@ -21,7 +21,6 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/public", express.static(path.resolve("public")));
-// app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRouter);
 app.use("/api/episode", episodeRouter);
