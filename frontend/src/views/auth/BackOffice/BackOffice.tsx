@@ -135,39 +135,6 @@ const BackOffice: React.FC = () => {
     }
   };
 
-  // Upload audio file without progress tracking
-  // const uploadAudioFile = async () => {
-  //   if (!selectedAudioFile) {
-  //     setFeedback("Ingen ljudfil vald");
-  //     return null;
-  //   }
-
-  //   setFeedback("");
-  //   setProgress(0);
-  //   setConverting(false);
-
-  //   const formData = new FormData();
-  //   formData.append("audioFile", selectedAudioFile);
-
-  //   try {
-  //     const response = await fetch("/api/upload/audio", {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Kunde inte ladda upp ljudfilen");
-  //     }
-
-  //     const data = await response.json();
-  //     setConverting(true);
-  //     return data.path;
-  //   } catch (error) {
-  //     setFeedback("Uppladdning av ljudfil misslyckades");
-  //     return null;
-  //   }
-  // };
-
   // Upload audio file with progress tracking
   const uploadAudioFile = async () => {
     if (!selectedAudioFile) {
@@ -393,6 +360,13 @@ const BackOffice: React.FC = () => {
     setDateOfRecording("");
   };
 
+  const getStatusText = () => {
+    if (uploading) return `Uppladdar: ${Math.round(progress ?? 0)}%`;
+    if (converting) return `Konverterar: ${Math.round(progress ?? 0)}%`;
+    if (!converting && !uploading && audioFile) return "Klart!";
+    return "";
+  };
+
   return (
     <div className="back-office">
       <h1>Back Office</h1>
@@ -529,14 +503,7 @@ const BackOffice: React.FC = () => {
                 style={{ width: `${progress}%` }}
               ></div>
               <div className="progress-text">
-                <p>
-                  {uploading
-                    ? "Uppladdning"
-                    : converting
-                    ? "Konvertering"
-                    : "Klar"}
-                  : {progress?.toFixed(1)}%
-                </p>
+                <p>{getStatusText()}</p>
               </div>
             </div>
           )}

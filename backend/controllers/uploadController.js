@@ -8,6 +8,18 @@ export const handleAudioUpload = async (req, res, next) => {
       return res.status(400).json({ message: "Ingen fil uppladdad" });
 
     const input = req.file.path;
+    const fileExt = path.extname(req.file.originalname).toLowerCase();
+
+    // Om det redan är en .mp3, returnera direkt
+    if (fileExt === ".mp3") {
+      const outputDir = path.resolve("public", "uploads", "audio");
+      const output = path.join(outputDir, req.file.filename);
+
+      // Flytta filen till audio-mappen (om den inte redan hamnat där)
+      fs.renameSync(input, output);
+
+      return res.json({ path: `/api/stream/audio/${req.file.filename}` });
+    }
 
     const outputFilename =
       path.basename(req.file.filename, path.extname(req.file.filename)) +
