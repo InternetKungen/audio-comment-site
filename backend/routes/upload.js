@@ -16,8 +16,8 @@ uploadRouter.post(
 );
 uploadRouter.post(
   "/poster",
-  posterUpload.single("posterFile"),
   isAuthAdmin,
+  posterUpload.single("posterFile"),
   handlePosterUpload
 );
 

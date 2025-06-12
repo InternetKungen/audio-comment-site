@@ -11,6 +11,7 @@ import http from "http";
 import path from "path";
 import uploadRouter from "./routes/upload.js";
 import streamRouter from "./routes/stream.js";
+import { createWebSocketServer } from "./websocket.js";
 
 dotenv.config();
 
@@ -51,3 +52,7 @@ server.listen(process.env.PORT, async () => {
     process.exit(1);
   }
 });
+
+// WebSocket
+const wss = createWebSocketServer(server);
+app.set("wss", wss);
