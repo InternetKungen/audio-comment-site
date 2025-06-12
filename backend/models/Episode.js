@@ -40,7 +40,7 @@ const episodeSchema = new mongoose.Schema(
         "https://res.cloudinary.com/dkccaruot/image/upload/v1722965887/oyswfgmlb5olqisiazsg.png",
     },
     audioFile: {
-      type: String, // "https://res.cloudinary.com/dkccaruot/video/upload/v1722965887/oyswfgmlb5olqisiazsg.mp3"
+      type: String, // "/public/uploads/audio/oyswfgmlb5olqisiazsg.mp3"
       required: true,
       default: "",
     },

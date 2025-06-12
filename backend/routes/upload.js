@@ -83,9 +83,14 @@ router.post("/audio", audioUpload.single("audioFile"), (req, res) => {
     return res.status(400).json({ message: "Ingen fil har laddats upp" });
   }
 
+  // res.json({
+  //   filename: req.file.filename,
+  //   path: `/public/uploads/audio/${req.file.filename}`,
+  // });
+
   res.json({
     filename: req.file.filename,
-    path: `/public/uploads/audio/${req.file.filename}`,
+    path: `/api/stream/audio/${req.file.filename}`,
   });
 });
 
