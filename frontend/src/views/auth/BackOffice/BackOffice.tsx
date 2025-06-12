@@ -37,6 +37,31 @@ const BackOffice: React.FC = () => {
     null
   );
 
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [converting, setConverting] = useState(false);
+
+  // Lyssna på WebSocket-meddelanden för konverteringsstatus
+  useEffect(() => {
+    const ws = new WebSocket(import.meta.env.VITE_WS_URL);
+
+    ws.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.progress !== undefined) {
+        setUploading(false);
+        setProgress(data.progress);
+        setConverting(true);
+      }
+      if (data.path) {
+        setAudioFile(data.path);
+        setConverting(false);
+        setProgress(null);
+      }
+    };
+
+    return () => ws.close();
+  }, []);
+
   // Hämta alla episoder
   useEffect(() => {
     const fetchEpisodes = async () => {
@@ -110,30 +135,62 @@ const BackOffice: React.FC = () => {
     }
   };
 
+  // Upload audio file with progress tracking
   const uploadAudioFile = async () => {
     if (!selectedAudioFile) {
       setFeedback("Ingen ljudfil vald");
       return null;
     }
 
+    setFeedback("");
+    setUploading(true);
+    setProgress(0);
+    setConverting(false);
+
     const formData = new FormData();
     formData.append("audioFile", selectedAudioFile);
 
     try {
-      const response = await fetch("/api/upload/audio", {
-        method: "POST",
-        body: formData,
+      const data = await new Promise<{ path: string }>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = (event.loaded / event.total) * 100;
+            setProgress(percent);
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            try {
+              const resData = JSON.parse(xhr.responseText);
+              resolve(resData);
+            } catch {
+              reject(new Error("Ogiltigt JSON-svar"));
+            }
+          } else {
+            reject(new Error("Fel vid uppladdning"));
+          }
+        };
+
+        xhr.onerror = () => {
+          reject(new Error("Nätverksfel vid uppladdning"));
+        };
+
+        xhr.open("POST", "/api/upload/audio");
+        xhr.send(formData);
       });
 
-      if (!response.ok) {
-        throw new Error("Kunde inte ladda upp ljudfilen");
-      }
-
-      const data = await response.json();
+      setUploading(false);
+      setConverting(true);
       return data.path;
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       setFeedback("Uppladdning av ljudfil misslyckades");
       return null;
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -168,9 +225,17 @@ const BackOffice: React.FC = () => {
   const handleCreateEpisode = async () => {
     try {
       // Upload files first if selected
-      const uploadedAudioPath = selectedAudioFile
-        ? await uploadAudioFile()
-        : null;
+      // const uploadedAudioPath = selectedAudioFile
+      //   ? await uploadAudioFile()
+      //   : null;
+
+      let uploadedAudioPath = null;
+
+      if (selectedAudioFile) {
+        uploadedAudioPath = await uploadAudioFile();
+        if (!uploadedAudioPath) return;
+      }
+
       const uploadedPosterPath = selectedPosterFile
         ? await uploadPosterFile()
         : null;
@@ -293,6 +358,13 @@ const BackOffice: React.FC = () => {
     setLength(0);
     setPoster("");
     setDateOfRecording("");
+  };
+
+  const getStatusText = () => {
+    if (uploading) return `Uppladdar: ${Math.round(progress ?? 0)}%`;
+    if (converting) return `Konverterar: ${Math.round(progress ?? 0)}%`;
+    if (!converting && !uploading && audioFile) return "Klart!";
+    return "";
   };
 
   return (
@@ -420,6 +492,21 @@ const BackOffice: React.FC = () => {
               )}
             </div>
           </form>
+          {(uploading || converting) && (
+            <div
+              className={`progress-container ${
+                (progress ?? 0) > 0 ? "show" : ""
+              }`}
+            >
+              <div
+                className="progress-bar"
+                style={{ width: `${progress}%` }}
+              ></div>
+              <div className="progress-text">
+                <p>{getStatusText()}</p>
+              </div>
+            </div>
+          )}
           {feedback && <p className="feedback">{feedback}</p>}
         </div>
       </div>
