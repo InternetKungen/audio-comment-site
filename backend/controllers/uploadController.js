@@ -18,7 +18,7 @@ export const handleAudioUpload = async (req, res, next) => {
       // Flytta filen till audio-mappen (om den inte redan hamnat där)
       fs.renameSync(input, output);
 
-      return res.json({ path: `/api/stream/audio/${req.file.filename}` });
+      return res.json({ filename: req.file.filename });
     }
 
     const outputFilename =
@@ -43,7 +43,7 @@ export const handleAudioUpload = async (req, res, next) => {
       })
       .on("end", () => {
         fs.unlinkSync(input); // Ta bort originalfilen
-        res.json({ path: `/api/stream/audio/${outputFilename}` });
+        res.json({ filename: outputFilename });
       })
       .on("error", (err) => next(err))
       .save(output);

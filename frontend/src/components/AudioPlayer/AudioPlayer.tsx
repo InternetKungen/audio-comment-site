@@ -9,11 +9,11 @@ interface Episode {
 }
 
 interface AudioPlayerProps {
-  audioFile: string;
+  audioUrl: string;
   episode: Episode;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile, episode }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, episode }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -27,7 +27,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile, episode }) => {
     audioRef,
   } = useAudioContext();
 
-  const localStorageKey = `audio-${audioFile}-time`;
+  const localStorageKey = `audio-${audioUrl}-time`;
 
   useEffect(() => {
     const savedTime = localStorage.getItem(localStorageKey);
@@ -35,7 +35,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile, episode }) => {
       audioRef.current.currentTime = parseFloat(savedTime);
       setCurrentTime(parseFloat(savedTime));
     }
-  }, [audioFile, audioRef]);
+  }, [audioUrl, audioRef]);
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -76,8 +76,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile, episode }) => {
   };
 
   const handlePlayPause = () => {
-    if (currentAudioFile !== audioFile) {
-      setAudioFile(audioFile, episode);
+    if (currentAudioFile !== audioUrl) {
+      setAudioFile(audioUrl, episode);
     }
     togglePlayPause();
   };
@@ -88,7 +88,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioFile, episode }) => {
         <h3>{`# ${episode.episodeNumber}: ${episode.title}`}</h3>
       </div>
       <button onClick={handlePlayPause} className="play-button">
-        {isPlaying && currentAudioFile === audioFile
+        {isPlaying && currentAudioFile === audioUrl
           ? String.fromCharCode(10074, 10074)
           : String.fromCharCode(9654)}
       </button>

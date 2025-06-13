@@ -1,9 +1,19 @@
 import Episode from "../models/Episode.js";
 
+const buildUrls = (episode) => {
+  const base = "/api";
+  return {
+    ...episode.toObject(),
+    audioUrl: `${base}/stream/audio/${episode.audioFile}`,
+    downloadUrl: `${base}/download/audio/${episode.audioFile}`,
+  };
+};
+
 export const getAllEpisodes = async (req, res) => {
   try {
     const episodes = await Episode.find();
-    res.json(episodes);
+    const episodesWithUrls = episodes.map(buildUrls);
+    res.json(episodesWithUrls);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch episodes", error });
   }
@@ -15,7 +25,7 @@ export const getEpisodeById = async (req, res) => {
     if (!episode) {
       return res.status(404).json({ message: "Episode not found" });
     }
-    res.json(episode);
+    res.json(buildUrls(episode));
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch episode", error });
   }

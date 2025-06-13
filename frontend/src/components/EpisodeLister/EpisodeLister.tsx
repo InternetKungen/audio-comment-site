@@ -13,6 +13,8 @@ interface Episode {
   description: string;
   poster: string;
   audioFile: string;
+  audioUrl: string;
+  downloadUrl: string;
   dateOfRecording: string;
 }
 
@@ -93,7 +95,7 @@ const EpisodeLister: React.FC = () => {
       <ul>
         {sortedEpisodes.map((episode) => {
           const isCurrentPlaying =
-            currentAudioFile === episode.audioFile && isPlaying;
+            currentAudioFile === episode.audioUrl && isPlaying;
 
           return (
             <li key={episode._id}>
@@ -118,12 +120,12 @@ const EpisodeLister: React.FC = () => {
                       event.preventDefault();
                       event.stopPropagation();
 
-                      if (currentAudioFile === episode.audioFile) {
+                      if (currentAudioFile === episode.audioUrl) {
                         // Om det redan är samma fil, toggla play/pause
                         togglePlayPause();
                       } else {
                         // Om det är en ny fil, sätt filen och starta uppspelningen
-                        setAudioFile(episode.audioFile, {
+                        setAudioFile(episode.audioUrl, {
                           episodeNumber: episode.episodeNumber,
                           title: episode.title,
                           poster: episode.poster,

@@ -17,6 +17,8 @@ interface Episode {
   players: string[];
   gameMaster: string;
   audioFile: string;
+  audioUrl: string;
+  downloadUrl: string;
   rating: number;
 }
 
@@ -56,7 +58,7 @@ const EpisodePage: React.FC = () => {
 
     try {
       // Fetch the audio file
-      const response = await fetch(episode.audioFile);
+      const response = await fetch(episode.downloadUrl);
       const blob = await response.blob();
 
       // Create a download link
@@ -85,7 +87,7 @@ const EpisodePage: React.FC = () => {
   if (loading) return <p>Loading episode...</p>;
   if (!episode) return <p>Episode not found.</p>;
 
-  const isCurrentPlaying = currentAudioFile === episode.audioFile && isPlaying;
+  const isCurrentPlaying = currentAudioFile === episode.audioUrl && isPlaying;
 
   return (
     <div className="episode-page">
@@ -123,12 +125,12 @@ const EpisodePage: React.FC = () => {
           type="button"
           className="play-button"
           onClick={() => {
-            if (currentAudioFile === episode.audioFile) {
+            if (currentAudioFile === episode.audioUrl) {
               // Om det redan är samma fil, toggla play/pause
               togglePlayPause();
             } else {
               // Om det är en ny fil, sätt filen och starta uppspelningen
-              setAudioFile(episode.audioFile, {
+              setAudioFile(episode.audioUrl, {
                 episodeNumber: episode.episodeNumber,
                 title: episode.title,
                 poster: episode.poster,

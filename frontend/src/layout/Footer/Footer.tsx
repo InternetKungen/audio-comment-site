@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="footer">
       {currentAudioFile && currentEpisode && (
-        <AudioPlayer audioFile={currentAudioFile} episode={currentEpisode} />
+        <AudioPlayer audioUrl={currentAudioFile} episode={currentEpisode} />
       )}
     </footer>
   );
