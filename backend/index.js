@@ -11,6 +11,7 @@ import http from "http";
 import path from "path";
 import uploadRouter from "./routes/upload.js";
 import streamRouter from "./routes/stream.js";
+import downloadRouter from "./routes/download.js";
 import { createWebSocketServer } from "./websocket.js";
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use("/api/user", userRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/stream", streamRouter);
+app.use("/api/download", downloadRouter);
 
 // Servera statiska filer från dist-mappen
 const distPath = path.resolve("..", "frontend", "dist");
