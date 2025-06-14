@@ -1,4 +1,6 @@
 import Episode from "../models/Episode.js";
+import fs from "fs";
+import path from "path";
 
 const buildUrls = (episode) => {
   const base = "/api";
@@ -59,11 +61,36 @@ export const updateEpisode = async (req, res) => {
 
 export const deleteEpisode = async (req, res) => {
   try {
-    const deletedEpisode = await Episode.findByIdAndDelete(req.params.id);
-    if (!deletedEpisode) {
+    const episode = await Episode.findByIdAndDelete(req.params.id);
+    if (!episode) {
       return res.status(404).json({ message: "Episode not found" });
     }
-    res.json({ message: "Episode deleted" });
+
+    // Ta bort ljudfilen
+    if (episode.audioFile) {
+      const audioPath = path.resolve("public/uploads/audio", episode.audioFile);
+      fs.unlink(audioPath, (err) => {
+        if (err && err.code !== "ENOENT") {
+          console.error("Failed to delete audio file:", err);
+        }
+      });
+    }
+
+    // Ta bort postern (ta bort första / om den finns)
+    if (episode.poster) {
+      const normalizedPosterPath = episode.poster.startsWith("/")
+        ? episode.poster.slice(1)
+        : episode.poster;
+      const posterPath = path.resolve(normalizedPosterPath);
+
+      fs.unlink(posterPath, (err) => {
+        if (err && err.code !== "ENOENT") {
+          console.error("Failed to delete poster file:", err);
+        }
+      });
+    }
+
+    res.json({ message: "Episode, audio file and poster deleted" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete episode", error });
   }
