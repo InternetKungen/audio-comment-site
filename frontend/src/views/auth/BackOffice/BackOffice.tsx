@@ -136,6 +136,65 @@ const BackOffice: React.FC = () => {
   };
 
   // Upload audio file with progress tracking
+  // const uploadAudioFile = async () => {
+  //   if (!selectedAudioFile) {
+  //     setFeedback("Ingen ljudfil vald");
+  //     return null;
+  //   }
+
+  //   setFeedback("");
+  //   setUploading(true);
+  //   setProgress(0);
+  //   setConverting(false);
+
+  //   const formData = new FormData();
+  //   formData.append("audioFile", selectedAudioFile);
+
+  //   try {
+  //     const data = await new Promise<string>((resolve, reject) => {
+  //       const xhr = new XMLHttpRequest();
+
+  //       xhr.upload.onprogress = (event) => {
+  //         if (event.lengthComputable) {
+  //           const percent = (event.loaded / event.total) * 100;
+  //           setProgress(percent);
+  //         }
+  //       };
+
+  //       xhr.onload = () => {
+  //         if (xhr.status === 200) {
+  //           try {
+  //             const resData = JSON.parse(xhr.responseText);
+  //             resolve(resData);
+  //           } catch {
+  //             reject(new Error("Ogiltigt JSON-svar"));
+  //           }
+  //         } else {
+  //           reject(new Error("Fel vid uppladdning"));
+  //         }
+  //       };
+
+  //       xhr.onerror = () => {
+  //         reject(new Error("Nätverksfel vid uppladdning"));
+  //       };
+
+  //       xhr.open("POST", "/api/upload/audio");
+  //       xhr.send(formData);
+  //     });
+
+  //     setUploading(false);
+  //     setConverting(true);
+  //     return data.path;
+  //   } catch (err) {
+  //     console.error(err);
+  //     setFeedback("Uppladdning av ljudfil misslyckades");
+  //     return null;
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
+  // Ersätt din uploadAudioFile-funktion med denna:
+  // Ersätt din uploadAudioFile-funktion med denna:
   const uploadAudioFile = async () => {
     if (!selectedAudioFile) {
       setFeedback("Ingen ljudfil vald");
@@ -151,7 +210,7 @@ const BackOffice: React.FC = () => {
     formData.append("audioFile", selectedAudioFile);
 
     try {
-      const data = await new Promise<{ path: string }>((resolve, reject) => {
+      const data = await new Promise<string>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
 
         xhr.upload.onprogress = (event) => {
@@ -165,12 +224,28 @@ const BackOffice: React.FC = () => {
           if (xhr.status === 200) {
             try {
               const resData = JSON.parse(xhr.responseText);
-              resolve(resData);
-            } catch {
+
+              // Hantera olika responsformat
+              let filename = null;
+              if (resData.filename) {
+                filename = resData.filename;
+              } else if (resData.path) {
+                filename = resData.path;
+              } else {
+                reject(
+                  new Error("Ogiltigt svar från server - saknar filename/path")
+                );
+                return;
+              }
+
+              resolve(filename);
+            } catch (parseError) {
               reject(new Error("Ogiltigt JSON-svar"));
             }
           } else {
-            reject(new Error("Fel vid uppladdning"));
+            reject(
+              new Error(`Fel vid uppladdning: ${xhr.status} ${xhr.statusText}`)
+            );
           }
         };
 
@@ -178,19 +253,35 @@ const BackOffice: React.FC = () => {
           reject(new Error("Nätverksfel vid uppladdning"));
         };
 
+        xhr.ontimeout = () => {
+          reject(new Error("Timeout vid uppladdning"));
+        };
+
+        // Sätt en timeout på 10 minuter
+        xhr.timeout = 10 * 60 * 1000;
+
         xhr.open("POST", "/api/upload/audio");
         xhr.send(formData);
       });
 
       setUploading(false);
-      setConverting(true);
-      return data.path;
-    } catch (err) {
-      console.error(err);
-      setFeedback("Uppladdning av ljudfil misslyckades");
-      return null;
-    } finally {
+
+      // Om det inte är en MP3-fil så kommer konvertering att ske
+      const fileExt = selectedAudioFile.name.toLowerCase().split(".").pop();
+      if (fileExt !== "mp3") {
+        setConverting(true);
+      } else {
+        setConverting(false);
+        setProgress(null);
+      }
+
+      return data;
+    } catch (err: any) {
+      setFeedback(`Uppladdning av ljudfil misslyckades: ${err.message}`);
       setUploading(false);
+      setConverting(false);
+      setProgress(null);
+      return null;
     }
   };
 
@@ -224,44 +315,50 @@ const BackOffice: React.FC = () => {
   // Skapa en ny episod
   const handleCreateEpisode = async () => {
     try {
-      // Upload files first if selected
-      // const uploadedAudioPath = selectedAudioFile
-      //   ? await uploadAudioFile()
-      //   : null;
-
       let uploadedAudioPath = null;
 
       if (selectedAudioFile) {
         uploadedAudioPath = await uploadAudioFile();
-        if (!uploadedAudioPath) return;
+        if (!uploadedAudioPath) {
+          setFeedback("Ljudfilsuppladdning misslyckades. Försök igen.");
+          return;
+        }
       }
 
       const uploadedPosterPath = selectedPosterFile
         ? await uploadPosterFile()
         : null;
 
+      const episodeData = {
+        title,
+        episodeNumber,
+        description,
+        characters: characters.split(",").map((c) => c.trim()),
+        players: players.split(",").map((p) => p.trim()),
+        gameMaster,
+        audioFile: uploadedAudioPath || audioFile,
+        length,
+        poster: uploadedPosterPath || poster,
+        dateOfRecording,
+      };
+
       const response = await fetch("/api/episode", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title,
-          episodeNumber,
-          description,
-          characters: characters.split(",").map((c) => c.trim()),
-          players: players.split(",").map((p) => p.trim()),
-          gameMaster,
-          audioFile: uploadedAudioPath || audioFile,
-          length,
-          poster: uploadedPosterPath || poster,
-          dateOfRecording,
-        }),
+        body: JSON.stringify(episodeData),
       });
 
-      if (!response.ok) throw new Error("Ett fel uppstod vid skapandet.");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Ett fel uppstod vid skapandet: ${response.status} ${errorText}`
+        );
+      }
 
       const newEpisode = await response.json();
+
       setEpisodes([...episodes, newEpisode]);
       setFeedback(`Episoden skapades: ${newEpisode.title}`);
       clearForm();

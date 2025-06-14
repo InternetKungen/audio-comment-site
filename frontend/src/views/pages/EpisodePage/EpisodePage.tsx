@@ -53,31 +53,23 @@ const EpisodePage: React.FC = () => {
   //   }
   // }, [episode, setBackgroundImage]);
 
-  const downloadEpisode = async () => {
-    if (!episode) return;
+  const downloadEpisode = () => {
+    if (!episode || !episode.downloadUrl) return;
 
     try {
-      // Fetch the audio file
-      const response = await fetch(episode.downloadUrl);
-      const blob = await response.blob();
-
-      // Create a download link
-      const downloadLink = document.createElement("a");
-      downloadLink.href = URL.createObjectURL(blob);
-
-      // Generate a filename with episode number and title
       const filename = `Episode_${
         episode.episodeNumber
       }_${episode.title.replace(/[^a-z0-9]/gi, "_")}.mp3`;
-      downloadLink.download = filename;
 
-      // Trigger the download
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
+      const url = `${episode.downloadUrl}?name=${encodeURIComponent(filename)}`;
 
-      // Clean up
-      document.body.removeChild(downloadLink);
-      URL.revokeObjectURL(downloadLink.href);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename; // fallback i vissa fall
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error("Error downloading episode:", error);
       alert("Failed to download the episode. Please try again.");
