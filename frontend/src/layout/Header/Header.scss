@@ -10,8 +10,26 @@
   position: fixed;
   z-index: 1000;
 
-  -webkit-backdrop-filter: blur(1px);
-  backdrop-filter: blur(1px);
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1; // lägger detta bakom allting i headern
+
+    background: linear-gradient(to bottom, $color-primary-dark, transparent);
+
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 1),
+      rgba(0, 0, 0, 0)
+    );
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+  }
 
   &__content {
     display: flex;

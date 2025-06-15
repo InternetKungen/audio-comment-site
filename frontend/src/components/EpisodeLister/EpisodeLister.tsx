@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./EpisodeLister.scss";
 import { useAudioContext } from "../../AudioContext";
+import Spinner from "../Spinner/Spinner";
 // import recentIcon from "../../assets/icons/schedule_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 // import episodeNumberIcon from "../../assets/icons/tag_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 import sortIcon from "../../assets/icons/sort_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
@@ -62,7 +63,12 @@ const EpisodeLister: React.FC = () => {
 
   const sortedEpisodes = sortEpisodes(episodes);
 
-  if (loading) return <p>Loading episodes...</p>;
+  if (loading)
+    return (
+      <div className="spinner-container">
+        <Spinner size="md" />
+      </div>
+    );
 
   return (
     <div className="episode-lister">
