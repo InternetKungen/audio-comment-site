@@ -14,6 +14,7 @@
   // min-height: 100vh; // Change from fixed height to full viewport height
   margin-bottom: 90px; // Add some bottom padding for scroll
   overflow-y: auto;
+  animation: fadeInUp 0.3s ease-in-out;
   &:after {
     content: "";
     position: absolute;
@@ -158,5 +159,24 @@
         transform: scale(1.1);
       }
     }
+  }
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+// Animation for the episode page
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }

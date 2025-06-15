@@ -471,11 +471,19 @@ const BackOffice: React.FC = () => {
         <div className="episode-list">
           <h2>Lista av episoder</h2>
           <ul>
-            {episodes.map((ep) => (
+            {/* {episodes.map((ep) => (
               <li key={ep._id} onClick={() => handleSelectEpisode(ep)}>
                 {ep.episodeNumber}: {ep.title}
               </li>
-            ))}
+            ))} */}
+            {episodes
+              .slice()
+              .sort((a, b) => a.episodeNumber - b.episodeNumber)
+              .map((ep) => (
+                <li key={ep._id} onClick={() => handleSelectEpisode(ep)}>
+                  {ep.episodeNumber}: {ep.title}
+                </li>
+              ))}
           </ul>
         </div>
         <div className="episode-form">

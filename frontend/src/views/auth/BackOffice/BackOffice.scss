@@ -11,6 +11,7 @@
   width: 654.969px;
   max-width: 100%;
   margin-bottom: 100px;
+  animation: fadeInUp 0.3s ease-in-out;
   .back-office-inner {
     display: flex;
     flex-direction: row;
@@ -119,4 +120,15 @@
   color: white;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   font-size: 14px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

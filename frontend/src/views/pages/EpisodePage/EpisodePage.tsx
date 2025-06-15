@@ -4,6 +4,7 @@ import { useAudioContext } from "../../../AudioContext";
 // import { useBackgroundContext } from "../../../BackgroundContext";
 import downloadIcon from "../../../assets/icons/download_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 import CommentSection from "../../../components/CommentSection/CommentSection";
+import Spinner from "../../../components/Spinner/Spinner";
 import "./EpisodePage.scss";
 
 interface Episode {
@@ -76,7 +77,12 @@ const EpisodePage: React.FC = () => {
     }
   };
 
-  if (loading) return <p>Loading episode...</p>;
+  if (loading)
+    return (
+      <div className="spinner-container">
+        <Spinner size="md" />
+      </div>
+    );
   if (!episode) return <p>Episode not found.</p>;
 
   const isCurrentPlaying = currentAudioFile === episode.audioUrl && isPlaying;
