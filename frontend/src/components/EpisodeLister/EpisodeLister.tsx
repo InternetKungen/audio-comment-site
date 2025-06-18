@@ -25,8 +25,13 @@ const EpisodeLister: React.FC = () => {
   const [sortOption, setSortOption] = useState<"episodeAsc" | "recent">(
     "episodeAsc"
   );
-  const { currentAudioFile, isPlaying, setAudioFile, togglePlayPause } =
-    useAudioContext();
+  const {
+    currentAudioFile,
+    isPlaying,
+    isLoading,
+    setAudioFile,
+    togglePlayPause,
+  } = useAudioContext();
 
   useEffect(() => {
     const fetchEpisodes = async () => {
@@ -103,6 +108,10 @@ const EpisodeLister: React.FC = () => {
           const isCurrentPlaying =
             currentAudioFile === episode.audioUrl && isPlaying;
 
+          // Kontrollera om denna specifika fil laddar
+          const isCurrentFileLoading =
+            isLoading && currentAudioFile === episode.audioUrl;
+
           return (
             <li key={episode._id}>
               <Link to={`/episode/${episode._id}`}>
@@ -140,9 +149,13 @@ const EpisodeLister: React.FC = () => {
                       }
                     }}
                   >
-                    {isCurrentPlaying
-                      ? String.fromCharCode(10074, 10074)
-                      : String.fromCharCode(9654)}
+                    {isCurrentFileLoading ? (
+                      <Spinner size="sm" />
+                    ) : isCurrentPlaying ? (
+                      String.fromCharCode(10074, 10074)
+                    ) : (
+                      String.fromCharCode(9654)
+                    )}
                   </button>
                 </div>
               </Link>

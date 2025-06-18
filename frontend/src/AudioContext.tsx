@@ -18,6 +18,7 @@ interface AudioContextType {
   currentAudioFile: string | null;
   currentEpisode: Episode | null;
   isPlaying: boolean;
+  isLoading: boolean;
   volume: number;
   audioRef: React.MutableRefObject<HTMLAudioElement>;
 
@@ -34,6 +35,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   const [currentAudioFile, setCurrentAudioFile] = useState<string | null>(null);
   const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [volume, setVolume] = useState(1); // Standardvolym 100%
   const audioRef = useRef<HTMLAudioElement>(new Audio());
   const { setBackgroundImage } = useBackgroundContext();
@@ -43,6 +45,37 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       setBackgroundImage(currentEpisode.poster);
     }
   }, [currentEpisode, setBackgroundImage]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    // Event listeners för att hantera loading states
+    const handleLoadStart = () => setIsLoading(true);
+    const handleCanPlay = () => setIsLoading(false);
+    const handlePlaying = () => {
+      setIsLoading(false);
+      setIsPlaying(true);
+    };
+    const handlePause = () => setIsPlaying(false);
+    const handleError = () => {
+      setIsLoading(false);
+      console.error("Fel vid uppspelning av ljudfil");
+    };
+
+    audio.addEventListener("loadstart", handleLoadStart);
+    audio.addEventListener("canplay", handleCanPlay);
+    audio.addEventListener("playing", handlePlaying);
+    audio.addEventListener("pause", handlePause);
+    audio.addEventListener("error", handleError);
+
+    return () => {
+      audio.removeEventListener("loadstart", handleLoadStart);
+      audio.removeEventListener("canplay", handleCanPlay);
+      audio.removeEventListener("playing", handlePlaying);
+      audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("error", handleError);
+    };
+  }, []);
+
   const setAudioFile = (file: string, episode: Episode) => {
     if (currentAudioFile !== file) {
       if (audioRef.current) {
@@ -54,16 +87,21 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       setCurrentAudioFile(file);
       setCurrentEpisode(episode);
       setIsPlaying(false);
+      setIsLoading(true);
     }
   };
 
   const togglePlayPause = () => {
     if (!audioRef.current) return;
     if (audioRef.current.paused) {
+      setIsLoading(true);
       audioRef.current
         .play()
-        .then(() => setIsPlaying(true))
+        .then(() => {
+          // Playing event kommer att hantera setIsPlaying(true) och setIsLoading(false)
+        })
         .catch((err) => console.error("Kunde inte spela upp ljudfilen:", err));
+      setIsLoading(false);
     } else {
       audioRef.current.pause();
       setIsPlaying(false);
@@ -80,6 +118,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       currentAudioFile,
       currentEpisode,
       isPlaying,
+      isLoading,
       volume,
       audioRef,
       setAudioFile,
@@ -90,11 +129,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       currentAudioFile,
       currentEpisode,
       isPlaying,
+      isLoading, // Lägg till i dependencies
       volume,
-      audioRef,
-      setAudioFile,
-      togglePlayPause,
-      handleVolumeChange,
     ]
   );
 
