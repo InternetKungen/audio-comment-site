@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAudioContext } from "../../AudioContext";
+import Spinner from "../Spinner/Spinner";
 import "./AudioPlayer.scss";
 
 interface Episode {
@@ -20,6 +21,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, episode }) => {
   const {
     currentAudioFile,
     isPlaying,
+    isLoading, // Använd loading state
     setAudioFile,
     togglePlayPause,
     setVolume,
@@ -42,21 +44,15 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, episode }) => {
 
     const audio = audioRef.current;
 
-    // Uppdatera duration när metadata laddas
     const updateDuration = () => setDuration(audio.duration);
-
-    // Uppdatera currentTime när ljudet spelar
     const updateTime = () => {
       setCurrentTime(audio.currentTime);
-      // Spara aktuell tid i localStorage
       localStorage.setItem(localStorageKey, audio.currentTime.toString());
     };
 
-    // Lägg till event listeners
     audio.addEventListener("loadedmetadata", updateDuration);
     audio.addEventListener("timeupdate", updateTime);
 
-    // Rensa event listeners vid avmontering
     return () => {
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("timeupdate", updateTime);
@@ -82,15 +78,22 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, episode }) => {
     togglePlayPause();
   };
 
+  // Kontrollera om denna specifika fil laddar
+  const isCurrentFileLoading = isLoading && currentAudioFile === audioUrl;
+
   return (
     <div className="audio-player">
       <div className="episode-info">
         <h3>{`# ${episode.episodeNumber}: ${episode.title}`}</h3>
       </div>
       <button onClick={handlePlayPause} className="play-button">
-        {isPlaying && currentAudioFile === audioUrl
-          ? String.fromCharCode(10074, 10074)
-          : String.fromCharCode(9654)}
+        {isCurrentFileLoading ? (
+          <Spinner size="sm" />
+        ) : isPlaying && currentAudioFile === audioUrl ? (
+          String.fromCharCode(10074, 10074)
+        ) : (
+          String.fromCharCode(9654)
+        )}
       </button>
       <input
         title="duration"

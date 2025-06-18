@@ -27,8 +27,13 @@ const EpisodePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const { currentAudioFile, isPlaying, setAudioFile, togglePlayPause } =
-    useAudioContext();
+  const {
+    currentAudioFile,
+    isPlaying,
+    isLoading,
+    setAudioFile,
+    togglePlayPause,
+  } = useAudioContext();
   // const { setBackgroundImage } = useBackgroundContext();
 
   useEffect(() => {
@@ -86,7 +91,9 @@ const EpisodePage: React.FC = () => {
   if (!episode) return <p>Episode not found.</p>;
 
   const isCurrentPlaying = currentAudioFile === episode.audioUrl && isPlaying;
-
+  // Kontrollera om denna specifika fil laddar
+  const isCurrentFileLoading =
+    isLoading && currentAudioFile === episode.audioUrl;
   return (
     <div className="episode-page">
       <h1 className="episode-title">
@@ -137,9 +144,13 @@ const EpisodePage: React.FC = () => {
             }
           }}
         >
-          {isCurrentPlaying
-            ? String.fromCharCode(10074, 10074)
-            : String.fromCharCode(9654)}
+          {isCurrentFileLoading ? (
+            <Spinner size="sm" />
+          ) : isCurrentPlaying ? (
+            String.fromCharCode(10074, 10074)
+          ) : (
+            String.fromCharCode(9654)
+          )}
         </button>
         <button
           type="button"
