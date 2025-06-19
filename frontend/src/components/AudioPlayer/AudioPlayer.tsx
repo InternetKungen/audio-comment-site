@@ -23,7 +23,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, episode }) => {
     currentAudioFile,
     isPlaying,
     isLoading,
-    setAudioFile,
+    setAudioFileAndPlay,
     togglePlayPause,
     setVolume,
     volume,
@@ -64,7 +64,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, episode }) => {
     const updateDuration = () => {
       setDuration(audio.duration);
       console.log("Duration updated:", audio.duration);
-      // Försök återställa sparad tid när metadata är laddad
       restoreSavedTime();
     };
 
@@ -79,7 +78,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, episode }) => {
     };
 
     const handleCanPlay = () => {
-      // Försök återställa sparad tid när filen kan spelas
       restoreSavedTime();
     };
 
@@ -112,14 +110,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, episode }) => {
   };
 
   const handlePlayPause = () => {
-    // Sätt ny fil först om det behövs
     if (currentAudioFile !== audioUrl) {
-      console.log("Setting new audio file before playing");
-      setAudioFile(audioUrl, episode);
+      // Ny fil - använd setAudioFileAndPlay
+      console.log("Setting new audio file and playing");
+      setAudioFileAndPlay(audioUrl, episode);
+    } else {
+      // Samma fil - toggla play/pause
+      togglePlayPause();
     }
-
-    // Sedan toggle play/pause
-    togglePlayPause();
   };
 
   // Kontrollera om denna specifika fil laddar

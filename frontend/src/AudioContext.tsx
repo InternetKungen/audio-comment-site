@@ -5,6 +5,7 @@ import React, {
   useRef,
   useMemo,
   useEffect,
+  useCallback,
 } from "react";
 import { useBackgroundContext } from "./BackgroundContext";
 
@@ -23,6 +24,7 @@ interface AudioContextType {
   audioRef: React.MutableRefObject<HTMLAudioElement>;
 
   setAudioFile: (file: string, episode: Episode) => void;
+  setAudioFileAndPlay: (file: string, episode: Episode) => void; // Ny funktion
   togglePlayPause: () => void;
   setVolume: (volume: number) => void;
 }
@@ -37,15 +39,17 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [volume, setVolume] = useState(1);
+  const [shouldAutoPlay, setShouldAutoPlay] = useState(false);
 
-  // Skapa audio element med korrekt preload-inställning
-  const audioRef = useRef<HTMLAudioElement>(null!);
+  const audioRef = useRef<HTMLAudioElement>(
+    null as unknown as HTMLAudioElement
+  );
 
   useEffect(() => {
     if (!audioRef.current) {
       const audio = new Audio();
-      audio.preload = "metadata"; // Ladda endast metadata, inte hela filen
-      // audio.crossOrigin = "anonymous"; // För CORS om behövs
+      audio.preload = "metadata";
+      // audio.crossOrigin = "anonymous";
       audioRef.current = audio;
     }
   }, []);
@@ -58,14 +62,44 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [currentEpisode, setBackgroundImage]);
 
+  // Autoplay när filen är redo
   useEffect(() => {
     const audio = audioRef.current;
-
-    const handleLoadStart = () => setIsLoading(true);
 
     const handleCanPlay = () => {
       setIsLoading(false);
       console.log("Audio can start playing");
+
+      // Om autoplay är aktiverat, starta uppspelning
+      if (shouldAutoPlay) {
+        console.log("Auto-playing audio...");
+        setShouldAutoPlay(false); // Återställ autoplay-flag
+        audio
+          .play()
+          .then(() => {
+            console.log("Auto-play successful");
+          })
+          .catch((error) => {
+            console.error("Auto-play failed:", error);
+            setIsLoading(false);
+            setIsPlaying(false);
+          });
+      }
+    };
+
+    audio.addEventListener("canplay", handleCanPlay);
+
+    return () => {
+      audio.removeEventListener("canplay", handleCanPlay);
+    };
+  }, [shouldAutoPlay]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    const handleLoadStart = () => {
+      setIsLoading(true);
+      console.log("Loading started");
     };
 
     const handlePlaying = () => {
@@ -92,6 +126,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     const handleError = (e: Event) => {
       setIsLoading(false);
       setIsPlaying(false);
+      setShouldAutoPlay(false); // Återställ autoplay vid fel
       console.error("Audio error:", e);
       const audioElement = e.target as HTMLAudioElement;
       if (audioElement.error) {
@@ -110,9 +145,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log("Audio metadata loaded, duration:", audio.duration);
     };
 
-    // Lägg till alla event listeners
+    // Event listeners
     audio.addEventListener("loadstart", handleLoadStart);
-    audio.addEventListener("canplay", handleCanPlay);
     audio.addEventListener("canplaythrough", handleCanPlayThrough);
     audio.addEventListener("playing", handlePlaying);
     audio.addEventListener("pause", handlePause);
@@ -123,7 +157,6 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return () => {
       audio.removeEventListener("loadstart", handleLoadStart);
-      audio.removeEventListener("canplay", handleCanPlay);
       audio.removeEventListener("canplaythrough", handleCanPlayThrough);
       audio.removeEventListener("playing", handlePlaying);
       audio.removeEventListener("pause", handlePause);
@@ -134,44 +167,60 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, []);
 
-  const setAudioFile = (file: string, episode: Episode) => {
-    if (currentAudioFile !== file) {
-      const audio = audioRef.current;
+  const setAudioFile = useCallback(
+    (file: string, episode: Episode) => {
+      if (currentAudioFile !== file) {
+        const audio = audioRef.current;
 
-      // Pausa nuvarande uppspelning
-      audio.pause();
+        // Pausa nuvarande uppspelning
+        audio.pause();
 
-      // Sätt ny källa
-      audio.src = file;
+        // Sätt ny källa
+        audio.src = file;
+        audio.preload = "metadata";
+        audio.load();
 
-      // Återställ preload för att säkerställa korrekt streaming
-      audio.preload = "metadata";
+        // Uppdatera state
+        setCurrentAudioFile(file);
+        setCurrentEpisode(episode);
+        setIsPlaying(false);
+        setIsLoading(true);
 
-      // Ladda om audio elementet
-      audio.load();
+        console.log("Setting new audio file:", file);
+      }
+    },
+    [currentAudioFile]
+  );
 
-      // Uppdatera state
-      setCurrentAudioFile(file);
-      setCurrentEpisode(episode);
-      setIsPlaying(false);
-      setIsLoading(true);
+  const setAudioFileAndPlay = useCallback(
+    (file: string, episode: Episode) => {
+      console.log("Setting audio file and preparing to play:", file);
 
-      console.log("Setting new audio file:", file);
-    }
-  };
+      if (currentAudioFile !== file) {
+        // Ny fil - sätt autoplay-flag
+        setShouldAutoPlay(true);
+        setAudioFile(file, episode);
+      } else {
+        // Samma fil - bara toggla play/pause
+        togglePlayPause();
+      }
+    },
+    [currentAudioFile, setAudioFile]
+  );
 
-  const togglePlayPause = async () => {
+  const togglePlayPause = useCallback(async () => {
     const audio = audioRef.current;
-    if (!audio || !currentAudioFile) return;
+    if (!audio || !currentAudioFile) {
+      console.log("No audio file loaded");
+      return;
+    }
 
     try {
       if (audio.paused) {
         setIsLoading(true);
         console.log("Attempting to play audio...");
 
-        // Försök spela upp
         await audio.play();
-
         // Playing event kommer att hantera state-uppdateringarna
       } else {
         console.log("Pausing audio...");
@@ -182,14 +231,14 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(false);
       setIsPlaying(false);
     }
-  };
+  }, [currentAudioFile]);
 
-  const handleVolumeChange = (volume: number) => {
+  const handleVolumeChange = useCallback((volume: number) => {
     setVolume(volume);
     if (audioRef.current) {
       audioRef.current.volume = volume;
     }
-  };
+  }, []);
 
   const audioContextValue = useMemo(
     () => ({
@@ -200,10 +249,21 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       volume,
       audioRef,
       setAudioFile,
+      setAudioFileAndPlay, // Lägg till ny funktion
       togglePlayPause,
       setVolume: handleVolumeChange,
     }),
-    [currentAudioFile, currentEpisode, isPlaying, isLoading, volume]
+    [
+      currentAudioFile,
+      currentEpisode,
+      isPlaying,
+      isLoading,
+      volume,
+      setAudioFile,
+      setAudioFileAndPlay,
+      togglePlayPause,
+      handleVolumeChange,
+    ]
   );
 
   return (

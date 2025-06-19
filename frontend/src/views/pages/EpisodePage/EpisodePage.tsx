@@ -31,7 +31,7 @@ const EpisodePage: React.FC = () => {
     currentAudioFile,
     isPlaying,
     isLoading,
-    setAudioFile,
+    setAudioFileAndPlay,
     togglePlayPause,
   } = useAudioContext();
   // const { setBackgroundImage } = useBackgroundContext();
@@ -82,6 +82,27 @@ const EpisodePage: React.FC = () => {
     }
   };
 
+  const handlePlayButtonClick = (episode: Episode, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    console.log("Play button clicked for episode:", episode.episodeNumber);
+
+    if (currentAudioFile === episode.audioUrl) {
+      // Samma fil - bara toggla play/pause
+      console.log("Toggling play/pause for current file");
+      togglePlayPause();
+    } else {
+      // Ny fil - sätt fil och spela
+      console.log("Setting new file and playing:", episode.audioUrl);
+      setAudioFileAndPlay(episode.audioUrl, {
+        episodeNumber: episode.episodeNumber,
+        title: episode.title,
+        poster: episode.poster,
+      });
+    }
+  };
+
   if (loading)
     return (
       <div className="spinner-container">
@@ -129,27 +150,15 @@ const EpisodePage: React.FC = () => {
         <button
           type="button"
           className="play-button"
-          onClick={() => {
-            if (currentAudioFile === episode.audioUrl) {
-              // Om det redan är samma fil, toggla play/pause
-              togglePlayPause();
-            } else {
-              // Om det är en ny fil, sätt filen och starta uppspelningen
-              setAudioFile(episode.audioUrl, {
-                episodeNumber: episode.episodeNumber,
-                title: episode.title,
-                poster: episode.poster,
-              });
-              setTimeout(() => togglePlayPause(), 0); // Säkerställer att togglePlayPause körs efter setAudioFile
-            }
-          }}
+          onClick={(event) => handlePlayButtonClick(episode, event)}
+          disabled={isCurrentFileLoading}
         >
           {isCurrentFileLoading ? (
             <Spinner size="sm" />
           ) : isCurrentPlaying ? (
-            String.fromCharCode(10074, 10074)
+            String.fromCharCode(10074, 10074) // Paus-symbol
           ) : (
-            String.fromCharCode(9654)
+            String.fromCharCode(9654) // Play-symbol
           )}
         </button>
         <button
