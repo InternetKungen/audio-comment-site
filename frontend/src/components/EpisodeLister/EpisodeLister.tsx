@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import "./EpisodeLister.scss";
 import { useAudioContext } from "../../AudioContext";
 import Spinner from "../Spinner/Spinner";
-// import recentIcon from "../../assets/icons/schedule_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
-// import episodeNumberIcon from "../../assets/icons/tag_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 import sortIcon from "../../assets/icons/sort_35dp_F3C78F_FILL0_wght400_GRAD0_opsz40.png";
 
 interface Episode {
@@ -29,7 +27,7 @@ const EpisodeLister: React.FC = () => {
     currentAudioFile,
     isPlaying,
     isLoading,
-    setAudioFile,
+    setAudioFileAndPlay,
     togglePlayPause,
   } = useAudioContext();
 
@@ -68,6 +66,27 @@ const EpisodeLister: React.FC = () => {
 
   const sortedEpisodes = sortEpisodes(episodes);
 
+  const handlePlayButtonClick = (episode: Episode, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    console.log("Play button clicked for episode:", episode.episodeNumber);
+
+    if (currentAudioFile === episode.audioUrl) {
+      // Samma fil - bara toggla play/pause
+      console.log("Toggling play/pause for current file");
+      togglePlayPause();
+    } else {
+      // Ny fil - sätt fil och spela
+      console.log("Setting new file and playing:", episode.audioUrl);
+      setAudioFileAndPlay(episode.audioUrl, {
+        episodeNumber: episode.episodeNumber,
+        title: episode.title,
+        poster: episode.poster,
+      });
+    }
+  };
+
   if (loading)
     return (
       <div className="spinner-container">
@@ -77,7 +96,6 @@ const EpisodeLister: React.FC = () => {
 
   return (
     <div className="episode-lister">
-      {/* <h1>Episodes</h1> */}
       <div className="sorting-controls">
         <label htmlFor="sort-select">
           <img src={sortIcon} alt="Sort Icon" />
@@ -89,26 +107,15 @@ const EpisodeLister: React.FC = () => {
             setSortOption(e.target.value as "episodeAsc" | "recent")
           }
         >
-          <option value="recent">
-            🕔
-            {/* <span className="recent-icon">
-              <img src={recentIcon} alt="Recent Icon" />
-            </span> */}
-          </option>
-          <option value="episodeAsc">
-            #
-            {/* <span className="episode-number-icon">
-              <img src={episodeNumberIcon} alt="Episode Number Icon" />
-            </span> */}
-          </option>
+          <option value="recent">🕔</option>
+          <option value="episodeAsc">#</option>
         </select>
       </div>
+
       <ul>
         {sortedEpisodes.map((episode) => {
           const isCurrentPlaying =
             currentAudioFile === episode.audioUrl && isPlaying;
-
-          // Kontrollera om denna specifika fil laddar
           const isCurrentFileLoading =
             isLoading && currentAudioFile === episode.audioUrl;
 
@@ -131,30 +138,15 @@ const EpisodeLister: React.FC = () => {
                   <button
                     type="button"
                     className="play-button"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-
-                      if (currentAudioFile === episode.audioUrl) {
-                        // Om det redan är samma fil, toggla play/pause
-                        togglePlayPause();
-                      } else {
-                        // Om det är en ny fil, sätt filen och starta uppspelningen
-                        setAudioFile(episode.audioUrl, {
-                          episodeNumber: episode.episodeNumber,
-                          title: episode.title,
-                          poster: episode.poster,
-                        });
-                        setTimeout(() => togglePlayPause(), 0); // Säkerställer att togglePlayPause körs efter setAudioFile
-                      }
-                    }}
+                    onClick={(event) => handlePlayButtonClick(episode, event)}
+                    disabled={isCurrentFileLoading}
                   >
                     {isCurrentFileLoading ? (
                       <Spinner size="sm" />
                     ) : isCurrentPlaying ? (
-                      String.fromCharCode(10074, 10074)
+                      String.fromCharCode(10074, 10074) // Paus-symbol
                     ) : (
-                      String.fromCharCode(9654)
+                      String.fromCharCode(9654) // Play-symbol
                     )}
                   </button>
                 </div>
